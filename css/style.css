@@ -1,47 +1,61 @@
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Nunito:wght@600;800&display=swap');
+/* ==========================================================================
+   SÁCH LẬT 3D ĐA PHƯƠNG TIỆN - MAI VÀ CHUYẾN PHIÊU LƯU CỦA NHỮNG BIỂN BÁO
+   CSS Thiết Kế Chuyên Nghiệp: Hiệu Ứng Lật Trang 3D Chân Thực, Video AI,
+   Đồng Bộ Karaoke Highlight/Unhighlight & Âm Thanh VieNeu-TTS
+   ========================================================================== */
 
 :root {
-  --primary-color: #ff6b6b;
-  --secondary-color: #4ecdc4;
-  --accent-color: #ffd166;
-  --dark-color: #1e293b;
-  --paper-bg: #fcfaf7;
-  --text-color: #1c1917;
-  --highlight-bg: #fef08a;
-  --highlight-text: #b45309;
+  --primary-color: #f59e0b;
+  --primary-dark: #d97706;
+  --primary-light: #fef3c7;
+  --accent-color: #3b82f6;
+  --bg-dark: #090d16;
+  --bg-stage: #111827;
+  --paper-bg: #fffdfa;
+  --paper-edge: #e2d9c8;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --highlight-bg: #fde047;
+  --highlight-glow: rgba(250, 204, 21, 0.6);
+  --spine-width: 28px;
+  --border-radius-book: 14px;
+  --font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --dock-height: 72px;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  background: radial-gradient(circle at 50% 30%, #eef5fc, #dbe7f4, #c9d9eb);
-  min-height: 100vh;
+  font-family: var(--font-family);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  overflow-x: hidden;
-  color: var(--text-color);
   user-select: none;
+  -webkit-user-select: none;
+  background-image: radial-gradient(circle at 50% 45%, #1e293b 0%, #090d16 100%);
 }
 
-/* Header thương hiệu */
+/* ==========================================================================
+   1. HEADER
+   ========================================================================== */
 .app-header {
-  width: 100%;
-  padding: 12px 24px;
+  height: 56px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.75);
+  justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   z-index: 100;
 }
 
@@ -52,307 +66,447 @@ body {
 }
 
 .book-title-header h1 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #1e3a8a;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f8fafc;
+  letter-spacing: 0.3px;
 }
 
-.book-title-header .badge-tag {
-  background: #fee2e2;
-  color: #ef4444;
+.badge-tag {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.header-status {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
 }
 
 .speaking-indicator {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 14px;
-  background: #ecfdf5;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 4px 12px;
   border-radius: 20px;
-  color: #059669;
-  font-size: 0.85rem;
-  font-weight: 600;
+  color: #fbbf24;
+  font-size: 0.8rem;
+  font-weight: 500;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
 }
 
 .speaking-indicator.active {
   opacity: 1;
+  transform: translateY(0);
 }
 
 .sound-wave-bars {
   display: flex;
-  align-items: center;
-  gap: 2px;
+  align-items: flex-end;
+  gap: 2.5px;
   height: 14px;
 }
 
 .sound-wave-bars span {
   width: 3px;
-  height: 100%;
-  background: #10b981;
+  background-color: #fbbf24;
   border-radius: 2px;
-  animation: wavePulse 0.8s infinite ease-in-out alternate;
+  animation: soundWave 0.8s ease-in-out infinite alternate;
 }
-.sound-wave-bars span:nth-child(2) { animation-delay: 0.2s; }
-.sound-wave-bars span:nth-child(3) { animation-delay: 0.4s; }
 
-@keyframes wavePulse {
+.sound-wave-bars span:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+.sound-wave-bars span:nth-child(2) { height: 14px; animation-delay: 0.25s; }
+.sound-wave-bars span:nth-child(3) { height: 8px; animation-delay: 0.4s; }
+
+@keyframes soundWave {
   0% { height: 4px; }
   100% { height: 14px; }
 }
 
-/* Khung đọc sách chính */
-.reader-viewport {
-  width: 100%;
+/* ==========================================================================
+   2. KHUNG ĐỌC SÁCH LẬT 3D (3D FLIPBOOK VIEWPORT & STAGE)
+   ========================================================================== */
+.flipbook-viewport {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 15px;
-}
-
-.story-card {
-  max-width: 1100px;
-  width: 95vw;
-  height: min(78vh, 740px);
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 20px 45px rgba(30, 41, 59, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04);
-  display: flex;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  transition: all 0.35s ease;
-}
-
-/* Cột Trái: Video Player */
-.media-column {
-  flex: 1;
-  background: #0f172a;
+  perspective: 2600px;
+  perspective-origin: 50% 50%;
+  padding: 16px 24px;
   position: relative;
   overflow: hidden;
+}
+
+.book-3d-stage {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.video-container {
+  transform-style: preserve-3d;
   width: 100%;
   height: 100%;
-  position: relative;
-  overflow: hidden;
 }
 
-.cover-media,
-.story-media {
+.book {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s ease;
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.65), 0 0 40px rgba(0, 0, 0, 0.4);
+  border-radius: var(--border-radius-book);
+}
+
+/* Cuốn sách khi đóng bìa (Page 0) */
+.book.state-closed {
+  width: min(530px, 88vw);
+  height: min(720px, calc(100vh - 160px));
+}
+
+/* Cuốn sách khi mở 2 trang đôi (Pages 1 - 9) */
+.book.state-open {
+  width: min(1140px, 96vw);
+  height: min(720px, calc(100vh - 160px));
+}
+
+/* Cuốn sách khi ở bìa sau (Page 10) */
+.book.state-end {
+  width: min(800px, 92vw);
+  height: min(680px, calc(100vh - 160px));
+}
+
+/* ==========================================================================
+   3. BÌA TRƯỚC (CLOSED COVER: PAGE 0)
+   ========================================================================== */
+.book-cover-front {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  cursor: pointer;
+  z-index: 30;
+  border-radius: var(--border-radius-book);
+}
+
+.cover-hard-surface {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius-book);
+  overflow: hidden;
+  box-shadow: inset -4px 0 10px rgba(0, 0, 0, 0.35), inset 4px 0 8px rgba(255, 255, 255, 0.2);
+  background-color: #1e293b;
+}
+
+.cover-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: opacity 0.4s ease;
 }
 
-/* Cột Phải: Lời Kể & Karaoke */
-.text-column {
-  flex: 1;
+/* Gáy sách bìa trước */
+.cover-spine-edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(255, 255, 255, 0.15) 40%, rgba(0, 0, 0, 0.35) 100%);
+  pointer-events: none;
+}
+
+.cover-edge-shadow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.4), transparent);
+  pointer-events: none;
+}
+
+/* Gợi ý mở sách ở góc bìa */
+.cover-corner-hint {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 16px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.cover-corner-hint:hover {
+  transform: translate(-4px, -4px);
+}
+
+.corner-hint-text {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  color: #fbbf24;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  animation: pulseHint 2s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes pulseHint {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+  50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6); }
+}
+
+/* Animation mở bìa 3D */
+.book-cover-front.flipping-open {
+  animation: flipCoverOpen 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes flipCoverOpen {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(-90deg);
+  }
+  100% {
+    transform: rotateY(-180deg);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* Animation đóng bìa 3D */
+.book-cover-front.flipping-close {
+  animation: flipCoverClose 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes flipCoverClose {
+  0% {
+    transform: rotateY(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: rotateY(-90deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   4. TRANG MỞ ĐÔI (OPEN BOOK SPREAD: PAGES 1 - 9)
+   ========================================================================== */
+.book-spread {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-color: var(--paper-bg);
+  border-radius: var(--border-radius-book);
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Trang Trái & Trang Phải */
+.spread-page {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background-color: var(--paper-bg);
+  overflow: hidden;
+}
+
+.spread-page-left {
+  border-top-left-radius: var(--border-radius-book);
+  border-bottom-left-radius: var(--border-radius-book);
+  box-shadow: inset 6px 0 16px rgba(0, 0, 0, 0.08);
+}
+
+.spread-page-right {
+  border-top-right-radius: var(--border-radius-book);
+  border-bottom-right-radius: var(--border-radius-book);
+  box-shadow: inset -6px 0 16px rgba(0, 0, 0, 0.08);
+}
+
+.page-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 40px 48px;
-  background-color: var(--paper-bg);
-  background-image: 
-    radial-gradient(ellipse at top right, rgba(240, 235, 220, 0.5), transparent 70%),
-    linear-gradient(to right, rgba(0,0,0,0.03), transparent 25px);
+}
+
+/* Rãnh gáy sách trung tâm tạo độ cong 3D */
+.book-spine-crease {
+  position: absolute;
+  top: 0;
+  left: calc(50% - (var(--spine-width) / 2));
+  width: var(--spine-width);
+  height: 100%;
+  background: linear-gradient(to right, 
+    rgba(0, 0, 0, 0.28) 0%, 
+    rgba(0, 0, 0, 0.12) 30%, 
+    rgba(0, 0, 0, 0.03) 50%, 
+    rgba(0, 0, 0, 0.12) 70%, 
+    rgba(0, 0, 0, 0.28) 100%
+  );
+  z-index: 25;
+  pointer-events: none;
+}
+
+.page-spine-shadow {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.page-spine-shadow-left {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.15) 0%, transparent 100%);
+}
+
+.page-spine-shadow-right {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, transparent 100%);
+}
+
+/* Cột Trái: Video Hoạt Hình */
+.video-frame {
   position: relative;
-}
-
-.text-header {
-  text-align: right;
-  font-family: 'Lora', serif;
-  font-size: 0.85rem;
-  letter-spacing: 2px;
-  color: #78716c;
-  text-transform: uppercase;
-  font-weight: 600;
-  border-bottom: 1px dashed rgba(120, 113, 108, 0.2);
-  padding-bottom: 12px;
-}
-
-.story-body {
-  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #020617;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 0;
-  overflow-y: auto;
 }
 
-/* Màn hình giới thiệu bìa */
-.cover-intro-view {
-  text-align: center;
-  max-width: 440px;
+.story-video-player {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.intro-badge {
-  display: inline-block;
-  padding: 6px 16px;
-  background: #fef3c7;
-  color: #d97706;
+.video-overlay-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+/* Cột Phải: Lời kể chữ đẹp mắt */
+.spread-page-right .page-inner {
+  padding: 44px 50px 32px 50px;
+  justify-content: space-between;
+}
+
+.story-header {
   font-size: 0.85rem;
   font-weight: 700;
-  border-radius: 20px;
-  margin-bottom: 18px;
-}
-
-.cover-intro-view h2 {
-  font-size: 1.65rem;
-  color: #1e3a8a;
-  line-height: 1.4;
-  margin-bottom: 14px;
-}
-
-.cover-intro-view p {
-  font-size: 1.05rem;
-  color: #475569;
-  line-height: 1.8;
-  margin-bottom: 28px;
-}
-
-.btn-start-reading {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-  border: none;
-  font-size: 1.1rem;
-  font-weight: 700;
-  padding: 14px 34px;
-  border-radius: 35px;
-  cursor: pointer;
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.35);
-  transition: all 0.25s ease;
-  display: inline-flex;
+  letter-spacing: 2.5px;
+  color: #b45309;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.btn-start-reading:hover {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.5);
+.story-header::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: #f59e0b;
 }
 
-/* Đoạn văn bản kể chuyện */
-.story-text-view {
-  width: 100%;
+.story-text-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  overflow-y: auto;
 }
 
 .story-paragraph {
-  font-family: 'Lora', serif;
-  font-size: 1.35rem;
-  line-height: 2.15;
-  color: #1c1917;
+  font-size: clamp(1.2rem, 1.85vw, 1.45rem);
+  line-height: 1.85;
+  color: #1e293b;
+  font-weight: 500;
   text-align: justify;
 }
 
-/* TỪNG TỪ ĐƯỢC CHẠY KARAOKE */
+/* ==========================================================================
+   5. KARAOKE HIGHLIGHT & UNHIGHLIGHT
+   ========================================================================== */
 .word {
   display: inline-block;
-  padding: 0 3px;
+  padding: 2px 2px;
   margin: 0 1px;
-  border-radius: 6px;
-  transition: all 0.12s ease;
-  position: relative;
+  border-radius: 4px;
+  transition: background-color 0.12s ease, color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-/* Đang đọc: BẬT highlight vàng cam */
+/* Từ đang được đọc -> BẬT sáng nổi bật */
 .word.karaoke-current {
-  background: #fef08a !important;
-  color: #b45309 !important;
+  background: linear-gradient(120deg, #fef08a 0%, #fde047 100%);
+  color: #854d0e;
   font-weight: 700;
-  transform: scale(1.12);
-  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);
-  z-index: 5;
+  transform: scale(1.05);
+  box-shadow: 0 2px 10px rgba(250, 204, 21, 0.55);
 }
 
-/* Đã đọc xong: UNHIGHLIGHT hoàn toàn */
+/* Từ đã đọc xong -> UNHIGHLIGHT và đổi sang màu dịu mắt */
 .word.karaoke-past {
-  background: transparent !important;
-  color: #44403c !important;
-  font-weight: 400;
-  transform: scale(1) !important;
-  box-shadow: none !important;
+  color: #334155;
+  background: transparent;
+  transform: scale(1);
+  box-shadow: none;
+  font-weight: 500;
 }
 
-/* Màn hình kết thúc */
-.end-view {
-  text-align: center;
-  max-width: 440px;
-}
-
-.end-icon {
-  font-size: 3.5rem;
-  margin-bottom: 12px;
-  animation: bounce 2s infinite ease-in-out;
-}
-
-.end-view h2 {
-  font-size: 1.7rem;
-  color: #059669;
-  margin-bottom: 14px;
-}
-
-.end-view p {
-  font-size: 1rem;
-  color: #475569;
-  line-height: 1.8;
-  margin-bottom: 26px;
-}
-
-.btn-replay-all {
-  background: linear-gradient(135deg, #059669, #047857);
-  color: white;
-  border: none;
-  font-size: 1.05rem;
-  font-weight: 700;
-  padding: 13px 30px;
-  border-radius: 30px;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.35);
-  transition: all 0.25s ease;
-}
-
-.btn-replay-all:hover {
-  transform: translateY(-2px) scale(1.04);
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.text-footer {
+/* Footer trang phải */
+.page-footer {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 15px;
-  border-top: 1px dashed rgba(120, 113, 108, 0.2);
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .audio-progress-bar-wrap {
-  width: 100%;
-  height: 4px;
-  background: #e2e8f0;
-  border-radius: 2px;
+  flex: 1;
+  max-width: 200px;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
   overflow: hidden;
 }
 
@@ -360,82 +514,309 @@ body {
   width: 0%;
   height: 100%;
   background: linear-gradient(90deg, #f59e0b, #ef4444);
-  border-radius: 2px;
+  border-radius: 3px;
   transition: width 0.1s linear;
 }
 
-.page-number-display {
-  text-align: right;
-  font-family: 'Lora', serif;
-  font-size: 1.15rem;
+.page-num-indicator {
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #78716c;
+  color: var(--text-muted);
 }
 
-/* THANH ĐIỀU KHIỂN NỔI (CONTROL DOCK) */
-.control-dock {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  padding: 10px 24px;
-  border-radius: 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+/* ==========================================================================
+   6. HIỆU ỨNG QUĂN MÉP TRANG 3D (CORNER CURL)
+   ========================================================================== */
+.corner-curl {
+  position: absolute;
+  bottom: 0;
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  transition: all 0.25s ease;
+}
+
+.corner-curl-right {
+  right: 0;
+  justify-content: flex-end;
+}
+
+.corner-curl-left {
+  left: 0;
+  justify-content: flex-start;
+}
+
+.corner-fold-shape {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  transition: all 0.25s ease;
+}
+
+.corner-curl-right .corner-fold-shape {
+  border-width: 0 0 35px 35px;
+  border-color: transparent transparent var(--paper-edge) transparent;
+  filter: drop-shadow(-3px -3px 4px rgba(0, 0, 0, 0.15));
+}
+
+.corner-curl-right:hover .corner-fold-shape {
+  border-width: 0 0 55px 55px;
+  border-color: transparent transparent #d1c3ad transparent;
+  filter: drop-shadow(-5px -5px 8px rgba(0, 0, 0, 0.25));
+}
+
+.corner-curl-left .corner-fold-shape {
+  border-width: 0 35px 35px 0;
+  border-color: transparent var(--paper-edge) transparent transparent;
+  filter: drop-shadow(3px -3px 4px rgba(0, 0, 0, 0.15));
+}
+
+.corner-curl-left:hover .corner-fold-shape {
+  border-width: 0 55px 55px 0;
+  border-color: transparent #d1c3ad transparent transparent;
+  filter: drop-shadow(5px -5px 8px rgba(0, 0, 0, 0.25));
+}
+
+/* ==========================================================================
+   7. LÁ LẬT 3D ĐỘNG (DYNAMIC 3D FLIPPING LEAF)
+   ========================================================================== */
+.flipping-leaf {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  transform-style: preserve-3d;
+  z-index: 50;
+  pointer-events: none;
+  display: none;
+}
+
+.leaf-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-color: var(--paper-bg);
+  overflow: hidden;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.08);
+}
+
+.leaf-front {
+  z-index: 2;
+  border-top-right-radius: var(--border-radius-book);
+  border-bottom-right-radius: var(--border-radius-book);
+}
+
+.leaf-back {
+  z-index: 1;
+  transform: rotateY(180deg);
+  border-top-left-radius: var(--border-radius-book);
+  border-bottom-left-radius: var(--border-radius-book);
+}
+
+/* Animation lật tiến (Next Page) */
+.flipping-leaf.flip-forward {
+  display: block;
+  left: 50%;
+  transform-origin: left center;
+  animation: leafTurnForward 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes leafTurnForward {
+  0% {
+    transform: rotateY(0deg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    transform: rotateY(-90deg);
+    box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.4);
+  }
+  100% {
+    transform: rotateY(-180deg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Animation lật lùi (Prev Page) */
+.flipping-leaf.flip-backward {
+  display: block;
+  left: 0;
+  transform-origin: right center;
+  animation: leafTurnBackward 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes leafTurnBackward {
+  0% {
+    transform: rotateY(0deg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    transform: rotateY(90deg);
+    box-shadow: -20px 20px 60px rgba(0, 0, 0, 0.4);
+  }
+  100% {
+    transform: rotateY(180deg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ==========================================================================
+   8. BÌA SAU / MÀN HÌNH HOÀN THÀNH (PAGE 10)
+   ========================================================================== */
+.book-cover-back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--border-radius-book);
+  background-color: #1e293b;
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 15px;
+  justify-content: center;
+  z-index: 30;
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.cover-back-surface {
+  padding: 40px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.celebration-content {
+  text-align: center;
+  max-width: 580px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: celebrationIn 0.8s ease;
+}
+
+@keyframes celebrationIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.celebration-badge {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 6px 18px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+}
+
+.celebration-content h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.celebration-content p {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #cbd5e1;
+}
+
+.btn-replay-all {
+  margin-top: 12px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  border: none;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+  transition: all 0.2s ease;
+}
+
+.btn-replay-all:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(245, 158, 11, 0.55);
+}
+
+/* ==========================================================================
+   9. THANH ĐIỀU KHIỂN NỔI (CONTROL DOCK)
+   ========================================================================== */
+.control-dock {
+  height: var(--dock-height);
+  margin: 0 auto 16px auto;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
   z-index: 100;
 }
 
 .dock-btn {
-  background: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 10px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #334155;
+  cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 1.15rem;
 }
 
 .dock-btn:hover {
-  background: #f1f5f9;
-  color: #0f172a;
-  transform: translateY(-1px);
-}
-
-.dock-btn:active {
-  transform: translateY(1px);
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  transform: translateY(-2px);
 }
 
 .dock-btn.btn-play-pause {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-  width: 48px;
-  height: 48px;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
 }
 
 .dock-btn.btn-play-pause:hover {
-  background: linear-gradient(135deg, #f87171, #ef4444);
-  transform: scale(1.08);
+  transform: scale(1.06);
+  box-shadow: 0 6px 22px rgba(245, 158, 11, 0.6);
 }
 
 .dock-separator {
   width: 1px;
-  height: 24px;
-  background: #cbd5e1;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 0 4px;
 }
 
 .dock-page-info {
-  font-weight: 700;
   font-size: 0.95rem;
-  color: #475569;
-  min-width: 75px;
+  font-weight: 600;
+  color: #f8fafc;
+  padding: 0 8px;
+  min-width: 90px;
   text-align: center;
 }
 
@@ -443,32 +824,37 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  padding: 8px 14px;
   border-radius: 20px;
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  background: #f1f5f9;
-  color: #64748b;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
 }
 
 .auto-turn-pill.active {
-  background: #dbeafe;
-  color: #2563eb;
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
 }
 
-/* Modal mục lục hình thu nhỏ (Thumbnail Drawer) */
+/* ==========================================================================
+   10. MODAL DRAWER MỤC LỤC
+   ========================================================================== */
 .drawer-overlay {
   position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
   z-index: 200;
   display: flex;
   align-items: flex-end;
-  justify-content: center;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -480,15 +866,15 @@ body {
 }
 
 .drawer-panel {
-  background: white;
   width: 100%;
-  max-width: 900px;
-  border-radius: 24px 24px 0 0;
+  max-height: 75vh;
+  background: #0f172a;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
   padding: 24px;
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   transform: translateY(100%);
-  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1);
-  max-height: 80vh;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   display: flex;
   flex-direction: column;
 }
@@ -501,107 +887,88 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .drawer-header h3 {
-  font-size: 1.2rem;
-  color: #1e293b;
+  color: #f8fafc;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
 .btn-close-drawer {
-  background: #f1f5f9;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
+  color: #fff;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 1.1rem;
   cursor: pointer;
-  color: #64748b;
 }
 
 .thumbnails-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 14px;
+  gap: 16px;
   overflow-y: auto;
-  padding: 5px;
+  padding: 8px 4px;
 }
 
 .thumb-card {
-  cursor: pointer;
+  background: #1e293b;
   border-radius: 10px;
-  overflow: hidden;
+  padding: 8px;
+  cursor: pointer;
   border: 2px solid transparent;
   transition: all 0.2s ease;
-  background: #f8fafc;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .thumb-card:hover {
-  transform: translateY(-3px);
-  border-color: #3b82f6;
-  box-shadow: 0 6px 15px rgba(59, 130, 246, 0.2);
+  border-color: #f59e0b;
+  transform: translateY(-4px);
 }
 
 .thumb-card.active {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 2px #fecaca;
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
 }
 
 .thumb-card img {
   width: 100%;
-  aspect-ratio: 4/3;
+  aspect-ratio: 3/4;
   object-fit: cover;
-  display: block;
+  border-radius: 6px;
 }
 
 .thumb-card span {
-  display: block;
-  padding: 6px;
   font-size: 0.8rem;
-  font-weight: 700;
-  color: #475569;
+  font-weight: 600;
+  color: #cbd5e1;
 }
 
-/* Responsive */
+/* ==========================================================================
+   11. RESPONSIVE
+   ========================================================================== */
 @media (max-width: 900px) {
-  .story-card {
-    flex-direction: column;
-    height: auto;
-    max-height: 85vh;
+  .book.state-open {
+    width: 96vw;
+    height: calc(100vh - 150px);
   }
-  .media-column {
-    height: 320px;
-    flex: none;
-  }
-  .text-column {
-    padding: 24px 20px;
-  }
-  .story-paragraph {
-    font-size: 1.15rem;
-    line-height: 1.9;
-  }
-}
-
-@media (max-width: 650px) {
-  .app-header h1 {
-    font-size: 0.95rem;
-  }
-  .media-column {
-    height: 250px;
+  .spread-page-right .page-inner {
+    padding: 24px 24px 20px 24px;
   }
   .story-paragraph {
     font-size: 1.05rem;
-    line-height: 1.8;
+    line-height: 1.7;
   }
   .control-dock {
-    padding: 8px 14px;
+    height: 60px;
     gap: 8px;
-  }
-  .auto-turn-pill span {
-    display: none;
+    padding: 0 14px;
   }
 }

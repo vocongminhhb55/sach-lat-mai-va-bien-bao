@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mai và Chuyến Phiêu Lưu Của Những Biển Báo - Sách Video Tương Tác</title>
+  <title>Mai và Chuyến Phiêu Lưu Của Những Biển Báo - Sách Lật 3D Đa Phương Tiện</title>
   
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
@@ -14,7 +14,7 @@
   <header class="app-header">
     <div class="book-title-header">
       <h1>Mai và Chuyến Phiêu Lưu Của Những Biển Báo</h1>
-      <span class="badge-tag">Sách Video Động</span>
+      <span class="badge-tag">Sách Lật 3D</span>
     </div>
     <div class="header-status">
       <div class="speaking-indicator" id="speaking-indicator">
@@ -26,67 +26,105 @@
     </div>
   </header>
 
-  <!-- Khung đọc sách Video chính (Multimedia Stage) -->
-  <main class="reader-viewport">
-    <div class="story-card" id="story-card">
+  <!-- Khung đọc sách Lật 3D (3D Flipbook Stage) -->
+  <main class="flipbook-viewport" id="flipbook-viewport">
+    <div class="book-3d-stage" id="book-stage">
       
-      <!-- Cột Trái: Video Hoạt Hình Chuyển Động Thực Thụ -->
-      <div class="media-column" id="media-column">
-        <div class="video-container" id="video-container">
-          <!-- Bìa hoặc Video sẽ hiển thị tại đây -->
-          <img id="cover-image" src="assets/pages/cover_front.jpg" alt="Bìa sách" class="cover-media">
-          <video id="story-video" class="story-media" loop muted playsinline preload="auto" style="display: none;"></video>
-        </div>
-      </div>
+      <!-- Khung Cuốn Sách 3D (The Book) -->
+      <div class="book" id="book">
 
-      <!-- Cột Phải: Lời Kể & Chữ Chạy Karaoke -->
-      <div class="text-column" id="text-column">
-        <div class="text-header" id="text-header">KIM THANH LÊ HUỲNH</div>
-        
-        <div class="story-body" id="story-body">
-          <!-- Nội dung chữ hoặc giới thiệu bìa -->
-          <div id="cover-intro" class="cover-intro-view">
-            <div class="intro-badge">✨ Quyển Sách Video Thông Minh</div>
-            <h2>Chào mừng bạn nhỏ đến với hành trình của bé Mai!</h2>
-            <p>Hôm nay, bác Hùng sẽ cùng bạn Mai dạo phố bằng chiếc xe đạp vàng và khám phá những bí mật thú vị của các biển báo giao thông.</p>
-            <button class="btn-start-reading" id="btn-start-reading">
-              <span>▶️ Bắt Đầu Đọc Truyện</span>
-            </button>
-          </div>
-
-          <div id="story-text-container" class="story-text-view" style="display: none;">
-            <p class="story-paragraph" id="story-paragraph">
-              <!-- Các từ Karaoke sẽ được render tại đây -->
-            </p>
-          </div>
-
-          <div id="end-view" class="end-view" style="display: none;">
-            <div class="end-icon">🌟</div>
-            <h2>Chúc Mừng Bạn Nhỏ!</h2>
-            <p>Bé đã cùng bạn Mai hoàn thành chuyến phiêu lưu tuyệt vời và học được thật nhiều bí mật của các biển báo giao thông. Hãy luôn nhớ chấp hành luật an toàn giao thông nhé!</p>
-            <button class="btn-replay-all" id="btn-replay-all">
-              <span>🔄 Đọc Lại Từ Đầu</span>
-            </button>
+        <!-- BÌA TRƯỚC (CLOSED COVER VIEW: Page 0) -->
+        <div class="book-cover-front" id="cover-front">
+          <div class="cover-hard-surface" id="cover-hard-surface">
+            <img src="assets/pages/cover_front.jpg" alt="Bìa sách" class="cover-img">
+            <div class="cover-spine-edge"></div>
+            <div class="cover-edge-shadow"></div>
+            <!-- Hiệu ứng quăn mép bìa gợi ý mở sách -->
+            <div class="cover-corner-hint" id="cover-corner-hint" title="Bấm vào để mở sách">
+              <div class="corner-fold"></div>
+              <span class="corner-hint-text">Mở sách 📖</span>
+            </div>
           </div>
         </div>
 
-        <div class="text-footer" id="text-footer">
-          <div class="audio-progress-bar-wrap" id="audio-progress-wrap" style="display: none;">
-            <div class="audio-progress-bar" id="audio-progress-bar"></div>
+        <!-- TRANG MỞ ĐÔI (OPEN BOOK SPREAD: Pages 1 - 9) -->
+        <div class="book-spread" id="book-spread" style="display: none;">
+          
+          <!-- Trang Trái: Trình chiếu Video AI Hoạt Họa Mượt Mà -->
+          <div class="spread-page spread-page-left" id="spread-left">
+            <div class="page-inner">
+              <div class="video-frame">
+                <video id="story-video" class="story-video-player" loop muted playsinline preload="auto"></video>
+                <div class="video-overlay-shine"></div>
+              </div>
+              <!-- Rãnh gáy trang trái -->
+              <div class="page-spine-shadow page-spine-shadow-left"></div>
+              <!-- Mép lật về trang trước -->
+              <div class="corner-curl corner-curl-left" id="corner-prev" title="Lật về trang trước">
+                <div class="corner-fold-shape"></div>
+              </div>
+            </div>
           </div>
-          <div class="page-number-display" id="page-number-display">Bìa sách</div>
+
+          <!-- Rãnh gáy sách trung tâm với hiệu ứng uốn cong 3D -->
+          <div class="book-spine-crease"></div>
+
+          <!-- Trang Phải: Lời kể chữ đẹp mắt chạy Karaoke Highlight & Unhighlight -->
+          <div class="spread-page spread-page-right" id="spread-right">
+            <div class="page-inner">
+              <div class="story-header" id="story-header">KIM THANH LÊ HUỲNH</div>
+              <div class="story-text-container" id="story-text-container">
+                <p class="story-paragraph" id="story-paragraph"></p>
+              </div>
+              <div class="page-footer">
+                <div class="audio-progress-bar-wrap" id="audio-progress-wrap">
+                  <div class="audio-progress-bar" id="audio-progress-bar"></div>
+                </div>
+                <div class="page-num-indicator" id="page-num-indicator">Trang 1 / 9</div>
+              </div>
+              <!-- Rãnh gáy trang phải -->
+              <div class="page-spine-shadow page-spine-shadow-right"></div>
+              <!-- Mép lật sang trang sau -->
+              <div class="corner-curl corner-curl-right" id="corner-next" title="Lật sang trang sau">
+                <div class="corner-fold-shape"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lá Lật 3D Động (3D Flipping Leaf) -->
+          <div class="flipping-leaf" id="flipping-leaf">
+            <div class="leaf-face leaf-front" id="leaf-front"></div>
+            <div class="leaf-face leaf-back" id="leaf-back"></div>
+            <div class="leaf-shadow" id="leaf-shadow"></div>
+          </div>
+
         </div>
+
+        <!-- BÌA SAU / MÀN HÌNH HOÀN THÀNH (Page 10) -->
+        <div class="book-cover-back" id="cover-back" style="display: none;">
+          <div class="cover-back-surface">
+            <div class="celebration-content">
+              <div class="celebration-badge">🌟 HOÀN THÀNH CHUYẾN PHIÊU LƯU 🌟</div>
+              <h2>Chúc Mừng Bé Đã Khám Phá Hết Sách!</h2>
+              <p>Bé đã cùng bạn Mai hoàn thành chuyến đi tuyệt vời và học được thật nhiều bí mật của các biển báo giao thông. Hãy luôn nhớ chấp hành luật an toàn giao thông, quan sát cẩn thận và đội mũ bảo hiểm nhé!</p>
+              <button class="btn-replay-all" id="btn-replay-all">
+                <span>🔄 Đọc Lại Từ Đầu</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
   </main>
 
-  <!-- Audio Element phát giọng đọc tiếng Việt -->
+  <!-- Audio Element phát giọng đọc tiếng Việt VieNeu-TTS -->
   <audio id="main-audio" preload="auto"></audio>
 
   <!-- Thanh điều khiển nổi bên dưới (Control Dock) -->
   <nav class="control-dock" aria-label="Thanh điều khiển">
-    <button class="dock-btn" id="btn-prev" title="Trang trước (Phím mũi tên Trái)">
+    <button class="dock-btn" id="btn-prev" title="Lật về trang trước (Phím mũi tên Trái)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     </button>
 
@@ -95,7 +133,7 @@
       <svg id="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
     </button>
 
-    <button class="dock-btn" id="btn-next" title="Trang sau (Phím mũi tên Phải)">
+    <button class="dock-btn" id="btn-next" title="Lật sang trang sau (Phím mũi tên Phải)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
     </button>
 
@@ -103,9 +141,9 @@
 
     <div class="dock-page-info" id="dock-page-info">Bìa sách</div>
 
-    <div class="auto-turn-pill active" id="btn-auto-turn" title="Tự động qua trang khi đọc xong">
+    <div class="auto-turn-pill active" id="btn-auto-turn" title="Tự động lật sang trang sau khi đọc xong">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-      <span>Tự qua trang: Bật</span>
+      <span>Tự lật trang: Bật</span>
     </div>
 
     <button class="dock-btn" id="btn-replay-page" title="Đọc lại trang này">
@@ -141,6 +179,7 @@
 
   <!-- Scripts Logic -->
   <script src="js/book-data.js"></script>
+  <script src="js/audio-speech.js"></script>
   <script src="js/word-timestamps.js"></script>
   <script src="js/app.js"></script>
 </body>
