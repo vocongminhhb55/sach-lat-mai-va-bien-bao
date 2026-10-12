@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mai và Chuyến Phiêu Lưu Của Những Biển Báo - Sách Lật Tương Tác</title>
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Thư viện PageFlip 3D (Offline) -->
+  <script src="libs/page-flip.browser.js"></script>
+</head>
+<body>
+
+  <!-- Thanh thông tin Header -->
+  <header class="app-header">
+    <div class="book-title-header">
+      <h1>Mai và Chuyến Phiêu Lưu Của Những Biển Báo</h1>
+      <span class="badge-tag">Sách Lật Động</span>
+    </div>
+    <div class="header-status">
+      <div class="speaking-indicator" id="speaking-indicator">
+        <div class="sound-wave-bars">
+          <span></span><span></span><span></span>
+        </div>
+        <span>Đang đọc...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Khung đọc sách Flipbook -->
+  <main class="flipbook-viewport">
+    <div id="flipbook" class="flipbook-container">
+      <!-- Các trang sách sẽ được render tự động từ dữ liệu tại đây -->
+    </div>
+  </main>
+
+  <!-- Thanh điều khiển nổi bên dưới (Control Dock) -->
+  <nav class="control-dock" aria-label="Thanh điều khiển">
+    <button class="dock-btn" id="btn-prev" title="Trang trước (Phím mũi tên Trái)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+
+    <button class="dock-btn btn-play-pause" id="btn-play-pause" title="Bắt đầu / Dừng đọc (Phím Cách)">
+      <svg id="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+      <svg id="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+    </button>
+
+    <button class="dock-btn" id="btn-next" title="Trang sau (Phím mũi tên Phải)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+
+    <div class="dock-separator"></div>
+
+    <div class="dock-page-info" id="dock-page-info">Bìa</div>
+
+    <div class="auto-turn-pill active" id="btn-auto-turn" title="Tự động lật sang trang sau khi đọc xong">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+      <span>Tự lật trang: Bật</span>
+    </div>
+
+    <button class="dock-btn" id="btn-replay-page" title="Đọc lại trang này">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    </button>
+
+    <button class="dock-btn" id="btn-mute" title="Bật/Tắt âm thanh">
+      <svg id="icon-unmuted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+      <svg id="icon-muted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    </button>
+
+    <button class="dock-btn" id="btn-drawer" title="Mục lục các trang">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    </button>
+
+    <button class="dock-btn" id="btn-fullscreen" title="Toàn màn hình">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    </button>
+  </nav>
+
+  <!-- Modal Danh sách hình thu nhỏ các trang -->
+  <div class="drawer-overlay" id="drawer-overlay">
+    <div class="drawer-panel">
+      <div class="drawer-header">
+        <h3>Danh Sách Các Trang</h3>
+        <button class="btn-close-drawer" id="btn-close-drawer">✕</button>
+      </div>
+      <div class="thumbnails-grid" id="thumbnails-grid">
+        <!-- Render danh sách thumbnail tự động -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts Logic -->
+  <script src="js/book-data.js"></script>
+  <script src="js/audio-speech.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

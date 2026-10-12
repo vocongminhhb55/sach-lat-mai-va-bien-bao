@@ -1,0 +1,8 @@
+# Bỏ qua file PDF gốc 250MB để tránh lỗi giới hạn 100MB của GitHub
+*.pdf
+
+# Thư mục tạm và log
+scratch/
+.system_generated/
+__pycache__/
+*.pyc
