@@ -377,6 +377,81 @@ def run_all_unit_tests():
     )
 
     # -------------------------------------------------------------
+    # NHÓM 8: KIỂM TRA FILE ÂM THANH BÌA TRƯỚC VÀ TIẾNG LẬT SÁCH CHÂN THỰC
+    # -------------------------------------------------------------
+    print("\n--- NHÓM 8: KIỂM TRA GIỌNG ĐỌC BÌA SÁCH & TIẾNG LẬT GIẤY ---")
+    cover_mp3 = "assets/audio/cover.mp3"
+    flip_mp3 = "assets/audio/page_flip.mp3"
+
+    runner.assert_true(os.path.exists(cover_mp3), "File âm thanh bìa trước cover.mp3 tồn tại", "Thiếu cover.mp3")
+    if os.path.exists(cover_mp3):
+        cover_size_kb = os.path.getsize(cover_mp3) / 1024
+        runner.assert_true(cover_size_kb > 20, f"Dung lượng cover.mp3 hợp lệ ({cover_size_kb:.1f} KB)", "File quá nhỏ")
+        cmd = ['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', cover_mp3]
+        try:
+            c_dur = float(subprocess.check_output(cmd, text=True).strip())
+            runner.assert_true(4.0 <= c_dur <= 8.0, f"Thời lượng đọc bìa trước tự nhiên ({c_dur:.2f}s)", f"Thời lượng bất thường: {c_dur}s")
+        except Exception as e:
+            runner.assert_true(False, "Đo thời lượng cover.mp3", str(e))
+
+    runner.assert_true(os.path.exists(flip_mp3), "File âm thanh lật sách page_flip.mp3 tồn tại", "Thiếu page_flip.mp3")
+    if os.path.exists(flip_mp3):
+        flip_size_kb = os.path.getsize(flip_mp3) / 1024
+        runner.assert_true(flip_size_kb > 5, f"Dung lượng page_flip.mp3 hợp lệ ({flip_size_kb:.1f} KB)", "File quá nhỏ")
+
+    runner.assert_true('id="btn-read-cover"' in html_content, "HTML có nút Nghe đọc bìa (#btn-read-cover)", "Thiếu nút #btn-read-cover")
+    runner.assert_true('btnReadCover' in app_js_content, "JS khởi tạo selector btnReadCover", "Thiếu selector btnReadCover")
+    runner.assert_true('playCoverAudio' in app_js_content, "JS có hàm playCoverAudio phát giọng đọc bìa", "Thiếu playCoverAudio")
+    runner.assert_true('pauseCoverAudio' in app_js_content, "JS có hàm pauseCoverAudio", "Thiếu pauseCoverAudio")
+    with open("js/audio-speech.js", "r", encoding="utf-8") as f:
+        audio_speech_content = f.read()
+    runner.assert_true('assets/audio/page_flip.mp3' in audio_speech_content, "Audio engine tích hợp tiếng lật sách chân thực (page_flip.mp3)", "Chưa dùng page_flip.mp3 trong audio-speech.js")
+
+    # -------------------------------------------------------------
+    # NHÓM 9: KIỂM THỬ KHÔNG NHẢY DÒNG CHỮ KHI HIGHLIGHT (ZERO LAYOUT SHIFT / CLS = 0)
+    # -------------------------------------------------------------
+    print("\n--- NHÓM 9: KIỂM THỬ KHÔNG NHẢY DÒNG CHỮ (ZERO LAYOUT SHIFT / CLS = 0) ---")
+    k_start = css_content.find('.word.karaoke-current {')
+    k_end = css_content.find('}', k_start)
+    k_block = css_content[k_start:k_end]
+
+    # Đảm bảo CSS không làm thay đổi font-weight hoặc scale kích thước từ khi highlight karaoke
+    runner.assert_true('700' not in k_block and '800' not in k_block, 
+                       "CSS .word.karaoke-current không đổi font-weight sang 700/800 (ngăn dãn glyphs và tràn dòng)", 
+                       f"Vẫn còn font-weight đậm: {k_block}")
+    runner.assert_true('scale' not in k_block, 
+                       "CSS .word.karaoke-current không phóng to tỷ lệ transform: scale(...) gây xô lệch chữ", 
+                       f"Vẫn còn transform: scale: {k_block}")
+    runner.assert_true('box-shadow' in k_block,
+                       "CSS dùng box-shadow phát sáng nổi bật giữ nguyên 100% hình học layout (CLS = 0)",
+                       "Chưa sử dụng box-shadow cho karaoke-current")
+
+    # -------------------------------------------------------------
+    # NHÓM 10: KIỂM THỬ ĐỒNG BỘ 3D FLIP KHÔNG BỊ TRỄ NỘI DUNG (ZERO DELAY UNDER TURNING LEAF)
+    # -------------------------------------------------------------
+    print("\n--- NHÓM 10: KIỂM THỬ ĐỒNG BỘ 3D FLIP KHÔNG BỊ HIỆN TRANG CŨ BÊN DƯỚI ---")
+    # Kiểm tra Case 3 (Forward): updateRightPageContent(toPage) phải được gọi ngay lập tức tại t = 0
+    # trước bất kỳ setTimeout nào, để khi lá lật nhấc lên trang bên dưới đã là trang mới
+    case3_start = app_js_content.find("TRƯỜNG HỢP 3: LẬT TIẾN GIỮA CÁC TRANG TRUYỆN")
+    case3_end = app_js_content.find("TRƯỜNG HỢP 4: LẬT LÙI GIỮA CÁC TRANG TRUYỆN")
+    case3_block = app_js_content[case3_start:case3_end]
+    first_timeout_3 = case3_block.find("setTimeout")
+    call_immediate_case3 = "updateRightPageContent(toPage);" in case3_block[:first_timeout_3]
+    runner.assert_true(call_immediate_case3, 
+                       "Lật tiến (Forward): updateRightPageContent(toPage) cập nhật ngay t = 0 (trang mới sẵn sàng dưới lá lật)", 
+                       "updateRightPageContent vẫn bị delay trong setTimeout")
+
+    # Kiểm tra Case 4 (Backward): playVideoForPage(toPage) phải được gọi ngay lập tức tại t = 0
+    case4_start = app_js_content.find("TRƯỜNG HỢP 4: LẬT LÙI GIỮA CÁC TRANG TRUYỆN")
+    case4_end = app_js_content.find("TRƯỜNG HỢP CHUYỂN TRANG KHÁC")
+    case4_block = app_js_content[case4_start:case4_end]
+    first_timeout_4 = case4_block.find("setTimeout")
+    call_immediate_case4 = "playVideoForPage(toPage);" in case4_block[:first_timeout_4]
+    runner.assert_true(call_immediate_case4, 
+                       "Lật lùi (Backward): playVideoForPage(toPage) cập nhật ngay t = 0 (trang mới sẵn sàng dưới lá lật)", 
+                       "playVideoForPage vẫn bị delay trong setTimeout")
+
+    # -------------------------------------------------------------
     # TỔNG KẾT KẾT QUẢ TEST
     # -------------------------------------------------------------
     print("\n" + "=" * 70)
@@ -393,3 +468,4 @@ def run_all_unit_tests():
 if __name__ == '__main__':
     code = run_all_unit_tests()
     sys.exit(code)
+

@@ -221,6 +221,52 @@ body {
   pointer-events: none;
 }
 
+/* Nút Nghe Đọc Bìa Sách */
+.btn-read-cover {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #fbbf24;
+  border: 1.5px solid rgba(251, 191, 36, 0.45);
+  border-radius: 30px;
+  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  transition: all 0.22s ease;
+  outline: none;
+}
+
+.btn-read-cover:hover {
+  background: rgba(15, 23, 42, 0.95);
+  color: #fef08a;
+  border-color: #f59e0b;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 28px rgba(245, 158, 11, 0.35);
+}
+
+.btn-read-cover.speaking {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  border-color: #fde047;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.4), 0 8px 24px rgba(245, 158, 11, 0.6);
+  animation: pulseCoverBtn 1.5s infinite;
+}
+
+@keyframes pulseCoverBtn {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.2), 0 12px 30px rgba(245, 158, 11, 0.7); }
+  100% { transform: scale(1); }
+}
+
 /* Animation mở bìa 3D */
 .book-cover-front.flipping-open {
   animation: flipCoverOpen 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;
@@ -437,53 +483,53 @@ body {
 
 .story-paragraph {
   font-size: clamp(1.2rem, 1.85vw, 1.45rem);
-  line-height: 1.85;
+  line-height: 1.9;
   color: #1e293b;
-  font-weight: 500;
+  font-weight: 600;
   text-align: justify;
 }
 
 /* ==========================================================================
-   5. KARAOKE HIGHLIGHT & UNHIGHLIGHT
+   5. KARAOKE HIGHLIGHT & UNHIGHLIGHT (ZERO LAYOUT SHIFT)
    ========================================================================== */
 .word {
   display: inline-block;
-  padding: 2px 3px;
+  padding: 1px 3px;
   margin: 0 1px;
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  font-weight: inherit;
+  transition: background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
 
 .word:hover {
   background-color: rgba(245, 158, 11, 0.18);
   color: #b45309;
-  transform: scale(1.04);
 }
 
-/* Từ đang được đọc -> BẬT sáng nổi bật */
+/* Từ đang được đọc -> BẬT sáng nổi bật, KHÔNG đổi font-weight hay scale để không nhảy dòng */
 .word.karaoke-current {
   background: linear-gradient(120deg, #fef08a 0%, #fde047 100%) !important;
-  color: #854d0e !important;
-  font-weight: 700;
-  transform: scale(1.06);
-  box-shadow: 0 2px 10px rgba(250, 204, 21, 0.55);
+  color: #7c2d12 !important;
+  font-weight: inherit !important;
+  transform: none !important;
+  box-shadow: 0 0 0 2px #fde047, 0 3px 12px rgba(245, 158, 11, 0.45) !important;
+  text-shadow: 0 0 1px rgba(124, 45, 18, 0.5);
 }
 
 /* Từ đã đọc xong -> UNHIGHLIGHT và đổi sang màu dịu mắt */
 .word.karaoke-past {
   color: #334155;
   background: transparent;
-  transform: scale(1);
+  transform: none;
   box-shadow: none;
-  font-weight: 500;
+  font-weight: inherit;
 }
 
 .word.karaoke-past:hover {
   background-color: rgba(245, 158, 11, 0.18);
   color: #b45309;
-  transform: scale(1.04);
 }
 
 /* Footer trang phải */

@@ -51,39 +51,19 @@ class SpeechNarrator {
     }
   }
 
-  // Phát âm thanh tiếng sột soạt lật trang sách giấy bằng Web Audio API
+  // Phát âm thanh tiếng lật trang sách giấy chân thực
   playFlipSound() {
     if (this.isMuted) return;
     try {
-      const ctx = this.getAudioContext();
-      const duration = 0.28;
-      const bufferSize = Math.floor(ctx.sampleRate * duration);
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-
-      for (let i = 0; i < bufferSize; i++) {
-        const decay = Math.exp(-i / (ctx.sampleRate * 0.07));
-        data[i] = (Math.random() * 2 - 1) * decay;
+      if (!this.flipAudio) {
+        this.flipAudio = new Audio('assets/audio/page_flip.mp3');
+        this.flipAudio.preload = 'auto';
       }
-
-      const noise = ctx.createBufferSource();
-      noise.buffer = buffer;
-
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(800, ctx.currentTime);
-      filter.frequency.exponentialRampToValueAtTime(350, ctx.currentTime + duration * 0.9);
-      filter.Q.value = 1.4;
-
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.4, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + duration);
-
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-
-      noise.start();
+      this.flipAudio.currentTime = 0;
+      this.flipAudio.volume = 0.75;
+      this.flipAudio.play().catch(e => {
+        // Fallback nhẹ nếu browser chặn
+      });
     } catch (e) {
       console.warn("Không thể phát âm thanh lật trang:", e);
     }

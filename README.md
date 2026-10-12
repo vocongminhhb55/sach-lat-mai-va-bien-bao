@@ -11,58 +11,64 @@ Dự án sách thiếu nhi điện tử tương tác 3D đa phương tiện, chu
 
 ## ✨ Các Tính Năng Nổi Bật
 
-1. **Hiệu Ứng Lật Sách 3D Chân Thực (Pure CSS3D Engine):**
-   - Mô phỏng chuyển động lật mở trang sách giấy 3D mượt mà với bóng đổ động, độ cong tự nhiên và âm thanh lật giấy lạo xạo.
+1. **Hiệu Ứng Lật Sách 3D Chân Thực & Hiển Thị Đồng Bộ Tức Thì (Pure CSS3D Engine):**
+   - Mô phỏng chuyển động lật mở trang sách giấy 3D mượt mà với bóng đổ động và độ cong tự nhiên.
+   - **Âm thanh lật giấy thật (`page_flip.mp3`):** Tiếng sột soạt đa tầng tự nhiên, êm dịu thay thế hoàn toàn âm thanh Web Audio nhân tạo cũ.
+   - **Hiển thị trang mới tức thì dưới lá lật ($t = 0$):** Khi lật sang trang mới, nội dung trang bên dưới lập tức là trang đích, không còn hiện tượng hiển thị trang cũ hay giật trễ hình ảnh.
    - Bìa trước mở thẳng vào Trang 1; ruột sách 2 trang mở đôi cân đối; màn hình kết thúc chúc mừng bé hoàn thành chuyến đi.
-   - Hoàn toàn độc lập, không dùng thư viện ngoài bị lỗi, tương thích hoàn hảo trên máy tính, iPad và smartphone.
 
-2. **Video Hoạt Hình MP4 Sống Động (Audio-Envelope Lip Sync & Eye Blink):**
+2. **Đọc Bìa Sách Tiếng Việt Truyền Cảm (Cover Audio):**
+   - Nút **"Nghe đọc bìa"** trên bìa trước phát giọng đọc tên sách và tên tác giả *"Mai và Chuyến Phiêu Lưu Của Những Biển Báo. Tác giả: Lê Huỳnh Kim Thanh."*
+   - Tích hợp thông minh với nút Play/Pause ở thanh dock điều khiển dưới.
+
+3. **Video Hoạt Hình MP4 Sống Động (Audio-Envelope Lip Sync & Eye Blink):**
    - Tranh minh họa bên trái được chuyển hóa thành video hoạt hình sống động sinh từ mô hình AI và OpenCV trên GPU.
    - **Môi mấp máy theo nhịp giọng nói (Lip-sync):** Miệng nhân vật tự động mấp máy mở/khép theo biên độ âm thanh giọng kể tiếng Việt.
    - **Chớp mắt tự nhiên:** Mí mắt chớp nhẹ nhàng theo chu kỳ sinh học 3–4 giây/lần.
    - **Cử động biểu cảm:** Biển báo phát sáng hào quang rực rỡ và rung lắc nhẹ đúng khoảnh khắc được nhắc tới trong lời kể.
    - Khung hình khóa cứng $720 \times 1110\text{ px}$, không bị tách rời hay trôi lệch khỏi mép trang sách.
 
-3. **Giọng Kể Tiếng Việt Tự Nhiên (VieNeu-TTS Pipeline):**
+4. **Giọng Kể Tiếng Việt Tự Nhiên (VieNeu-TTS Pipeline):**
    - Sử dụng mô hình tổng hợp giọng đọc AI chất lượng cao (voice nữ miền Nam `Kim Thanh`), truyền cảm, phát âm rõ ràng, phù hợp lứa tuổi thiếu nhi.
    - Chuẩn hóa $100\%$ chính tả tiếng Việt cho toàn bộ 9 trang truyện.
 
-4. **Hiệu Ứng Chữ Chạy Karaoke & Tương Tác Bấm Chữ / Tua Tiến Trình:**
+5. **Hiệu Ứng Chữ Chạy Karaoke & Triệt Tiêu Nhảy Dòng (Zero Cumulative Layout Shift):**
    - Mốc thời gian từng từ được trích xuất bằng mô hình AI **Faster-Whisper** trên GPU CUDA.
-   - Khi audio phát tới đâu, từ đó sẽ phát sáng hào quang cam vàng rực rỡ (`.karaoke-current`).
+   - Khi audio phát tới đâu, từ đó sẽ phát sáng hào quang vàng rực rỡ (`.karaoke-current`).
    - Ngay khi đọc xong, từ tự động đổi sang màu xám êm dịu (`.karaoke-past`), **tuyệt đối không bị đè highlight** hay sót chữ.
+   - **Triệt tiêu hiện tượng dãn chữ, nhảy dòng:** Giữ cố định `font-weight: 600`, bỏ scale biến đổi hình học, loại trừ hoàn toàn việc các từ bị đẩy rớt dòng khi highlight.
    - **Bấm vào chữ để đọc (Word-Click Seek):** Bé hoặc phụ huynh có thể bấm vào bất kỳ từ nào trên trang để nghe giọng đọc nhảy ngay tới từ đó!
    - **Tua thanh tiến trình:** Bấm trực tiếp vào thanh tiến độ để tua nhanh/chậm tùy thích.
    - **Đọc tiếp mượt mà (Resume Playback):** Bấm Tạm dừng (Pause) rồi bấm Tiếp tục (Play) sẽ đọc tiếp đúng vị trí đang dừng, không bao giờ bị nhảy đọc lại từ đầu trang.
 
-5. **Nếp Gấp Góc Trang Rỗng Xuyên Thấu Chân Thực (Corner Fold Clip-Path):**
+6. **Nếp Gấp Góc Trang Rỗng Xuyên Thấu Chân Thực (Corner Fold Clip-Path):**
    - Mép nếp gấp góc dưới bên trái được cắt chéo chính xác bằng thuật toán `clip-path` đa giác trên cả khung hình và video player.
    - Bên dưới nếp gấp hoàn toàn rỗng xuyên thấu mặt bàn, không còn bất kỳ vệt màu hay mảnh hình thừa nào.
 
-6. **Tự Động Lật Trang & Điều Khiển Toàn Diện:**
+7. **Tự Động Lật Trang & Điều Khiển Toàn Diện:**
    - Đọc xong mỗi trang sẽ có khoảng nghỉ tự nhiên $1.2\text{s}$ để bé ngắm tranh rồi tự động lật tiếp sang trang sau.
    - Đầy đủ nút Play/Pause, Đọc lại trang này, Bật/tắt tự lật, Bật/tắt âm thanh, Toàn màn hình (F11), và Mục lục thu nhỏ (Drawer Thumbnails).
    - Hỗ trợ phím tắt tiện lợi: Phím Cách (Space) để Play/Pause, Mũi tên Trái/Phải để lật trang.
 
-7. **Màn Hình Kết Thúc Thông Minh (Trang 10):**
+8. **Màn Hình Kết Thúc Thông Minh (Trang 10):**
    - Phát âm thanh kèn fanfare chúc mừng bé đã khám phá hết sách.
    - Tích hợp cụm nút thao tác tức thì:
      - **⬅ Quay Về Trang 9:** Lật lùi lá sách 3D mượt mà về trang trước.
      - **🔄 Đọc Lại Từ Đầu:** Tự động mở sách vào Trang 1, phát giọng đọc và chạy chữ karaoke từ đầu.
 
-8. **Chạy Mượt Cả Khi Không Có Mạng (100% Offline):**
+9. **Chạy Mượt Cả Khi Không Có Mạng (100% Offline):**
    - Toàn bộ tài nguyên, âm thanh, video và font chữ đều được lưu trữ cục bộ.
    - Chỉ cần tải thư mục về và nhấp đúp file `index.html` là đọc được ngay.
 
 ---
 
-## 🧪 Hệ Thống Kiểm Thử Tự Động (150 Unit Tests)
+## 🧪 Hệ Thống Kiểm Thử Tự Động (165 Unit Tests)
 
 Dự án tích hợp bộ kiểm thử toàn diện `step4_run_tests.py` kiểm tra mọi thành phần của hệ thống:
 ```powershell
 python step4_run_tests.py
 ```
-**Kết quả: 150 TEST PASS | 0 TEST FAIL (100% Đạt Chuẩn).**
+**Kết quả: 165 TEST PASS | 0 TEST FAIL (100% Đạt Chuẩn).**
 
 ---
 

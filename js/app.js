@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Các phần tử DOM giao diện chính
   const book = document.getElementById('book');
   const coverFront = document.getElementById('cover-front');
+  const btnReadCover = document.getElementById('btn-read-cover');
   const bookSpread = document.getElementById('book-spread');
   const spreadLeft = document.getElementById('spread-left');
   const spreadRight = document.getElementById('spread-right');
@@ -225,6 +226,66 @@ document.addEventListener('DOMContentLoaded', () => {
     mainAudio.pause();
     speakingIndicator.classList.remove('active');
     audioProgressBar.style.width = '0%';
+    if (btnReadCover) {
+      btnReadCover.classList.remove('speaking');
+      btnReadCover.querySelector('span').textContent = 'Nghe đọc bìa';
+    }
+  }
+
+  // Phát giọng đọc tên sách & tác giả ở trang bìa (Page 0)
+  function playCoverAudio() {
+    stopCurrentAudio();
+    mainAudio.src = 'assets/audio/cover.mp3';
+    mainAudio.currentTime = 0;
+    mainAudio.muted = isMuted;
+
+    setPlayingState(true);
+    if (btnReadCover) {
+      btnReadCover.classList.add('speaking');
+      btnReadCover.querySelector('span').textContent = 'Đang đọc bìa...';
+    }
+
+    mainAudio.onended = () => {
+      if (btnReadCover) {
+        btnReadCover.classList.remove('speaking');
+        btnReadCover.querySelector('span').textContent = 'Nghe đọc bìa';
+      }
+      if (autoTurnPages && isAutoPlaying && currentPageIndex === 0) {
+        autoTurnTimeout = setTimeout(() => {
+          flipToPage(1, 'forward');
+        }, 1200);
+      } else {
+        setPlayingState(false);
+      }
+    };
+
+    mainAudio.play().catch(err => {
+      console.warn("Cover audio play blocked by browser policy:", err);
+    });
+  }
+
+  function pauseCoverAudio() {
+    mainAudio.pause();
+    setPlayingState(false);
+    if (btnReadCover) {
+      btnReadCover.classList.remove('speaking');
+      btnReadCover.querySelector('span').textContent = 'Nghe đọc bìa';
+    }
+  }
+
+  function resumeCoverAudio() {
+    if (!mainAudio.src || !mainAudio.src.includes('cover.mp3') || mainAudio.ended) {
+      playCoverAudio();
+      return;
+    }
+    setPlayingState(true);
+    if (btnReadCover) {
+      btnReadCover.classList.add('speaking');
+      btnReadCover.querySelector('span').textContent = 'Đang đọc bìa...';
+    }
+    mainAudio.play().catch(err => {
+      console.warn("Resume cover audio blocked:", err);
+    });
   }
 
   // Nhảy tới mốc thời gian cụ thể trong trang (Seek to time)
@@ -432,9 +493,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
           updateRightPageContent(9);
-        }, 400);
-
-        setTimeout(() => {
           flippingLeaf.className = 'flipping-leaf';
           currentPageIndex = 9;
           updateDockInfo(9);
@@ -536,10 +594,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Kích hoạt lá lật 3D xoay từ phải sang trái
       flippingLeaf.className = 'flipping-leaf flip-forward';
 
-      // Tại thời điểm lá lật dựng đứng 90 độ (400ms): Cập nhật chữ trang phải bên dưới
-      setTimeout(() => {
-        updateRightPageContent(toPage);
-      }, 400);
+      // NGAY LẬP TỨC tại t = 0: Cập nhật chữ trang phải bên dưới thành trang mới (toPage)
+      // Khi lá lật vừa nhấc lên, trang bên dưới đã sẵn sàng là trang mới toPage, không bị giật hay chậm trễ
+      updateRightPageContent(toPage);
 
       // Khi lật xong hoàn toàn (850ms): Cập nhật video bên trái và bắt đầu phát
       setTimeout(() => {
@@ -585,10 +642,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // Kích hoạt lá lật 3D xoay từ trái sang phải
       flippingLeaf.className = 'flipping-leaf flip-backward';
 
-      setTimeout(() => {
-        playVideoForPage(toPage);
-      }, 400);
+      // NGAY LẬP TỨC tại t = 0: Cập nhật tranh/video bên trái thành trang mới (toPage)
+      // Khi lá lật vừa nhấc lên khỏi bên trái, trang bên dưới đã sẵn sàng là toPage
+      playVideoForPage(toPage);
 
+      // Khi lật xong hoàn toàn (850ms): Cập nhật chữ trang phải và bắt đầu phát
       setTimeout(() => {
         updateRightPageContent(toPage);
         flippingLeaf.className = 'flipping-leaf';
@@ -668,9 +726,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 6. GẮN SỰ KIỆN TƯƠNG TÁC
+  // Nút đọc bìa trước (Nghe đọc tên sách và tác giả)
+  if (btnReadCover) {
+    btnReadCover.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (mainAudio.src && mainAudio.src.includes('cover.mp3') && !mainAudio.paused) {
+        pauseCoverAudio();
+      } else {
+        playCoverAudio();
+      }
+    });
+  }
+
   // Click vào Bìa trước ➔ Mở sách vào thẳng Trang 1
-  coverFront.addEventListener('click', () => {
+  coverFront.addEventListener('click', (e) => {
+    if (e.target.closest('#btn-read-cover')) return;
     if (currentPageIndex === 0) {
+      stopCurrentAudio();
       setPlayingState(true);
       flipToPage(1, 'forward');
     }
@@ -714,8 +786,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Nút Play / Pause
   btnPlayPause.addEventListener('click', () => {
     if (currentPageIndex === 0) {
-      setPlayingState(true);
-      flipToPage(1, 'forward');
+      if (mainAudio.src && mainAudio.src.includes('cover.mp3') && !mainAudio.paused) {
+        pauseCoverAudio();
+      } else {
+        playCoverAudio();
+      }
       return;
     }
 
