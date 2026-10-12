@@ -4,6 +4,7 @@
 # Thư mục tạm và log
 scratch/
 .system_generated/
-__pycache__/
-*.pyc
+# File âm thanh wav trung gian
+assets/audio/*.wav
+*.wav
 

@@ -1,17 +1,17 @@
 /**
  * Dữ liệu sách: Mai và Chuyến Phiêu Lưu Của Những Biển Báo
- * Tác giả: Kim Thanh Lê Huỳnh
+ * Tác giả: Lê Huỳnh Kim Thanh
  */
 const BOOK_DATA = {
   title: "Mai và Chuyến Phiêu Lưu Của Những Biển Báo",
-  author: "Kim Thanh Lê Huỳnh",
+  author: "Lê Huỳnh Kim Thanh",
   totalPages: 10, // 1 Cover + 9 Story spreads
   pages: [
     {
       pageNumber: 1,
       storyIndex: 1,
       leftImage: "assets/pages/story_1_left.jpg",
-      header: "KIM THANH LÊ HUỲNH",
+      header: "LÊ HUỲNH KIM THANH",
       text: "Hôm nay là một ngày nắng đẹp, cô bé Mai hào hứng dắt chiếc xe đạp màu vàng của mình ra sân. Hôm nay, bác Hùng hàng xóm sẽ dẫn Mai đi dạo phố và dạy cho Mai những \"bí mật\" của các biển báo giao thông để Mai có thể tự tin đi lại an toàn. Mai thắt chặt quai mũ bảo hiểm và sẵn sàng lên đường.",
       audioHint: "Ngày nắng đẹp, bé Mai chuẩn bị dạo phố cùng bác Hùng.",
       hotspots: [
@@ -54,7 +54,7 @@ const BOOK_DATA = {
       pageNumber: 2,
       storyIndex: 2,
       leftImage: "assets/pages/story_2_left.jpg",
-      header: "KIM THANH LÊ HUỲNH",
+      header: "LÊ HUỲNH KIM THANH",
       text: "Vừa đi được một đoạn, bác Hùng ra hiệu cho Mai dừng lại trước một biển báo hình tam giác màu vàng có hình hai bạn nhỏ đang chạy. Bác Hùng ôn tồn nói: \"Đây là biển báo 'Nguy hiểm có trẻ em' đấy Mai ạ. Khi thấy biển này, các chú lái xe phải đi chậm lại vì gần đây có trường học hoặc sân chơi.\"",
       audioHint: "Biển báo nguy hiểm: chú ý có trẻ em đi qua!",
       hotspots: [
@@ -86,7 +86,7 @@ const BOOK_DATA = {
       pageNumber: 3,
       storyIndex: 3,
       leftImage: "assets/pages/story_3_left.jpg",
-      header: "KIM THANH LÊ HUỲNH",
+      header: "LÊ HUỲNH KIM THANH",
       text: "Đi tới một ngã tư lớn, Mai định rẽ trái để ghé vào tiệm kem nhưng bác Hùng ngăn lại. Bác chỉ vào một biển báo hình tròn có viền đỏ, bên trong có hình mũi tên quẹo trái nhưng bị một vạch đỏ gạch chéo. \"Mai nhìn xem, đây là biển 'Cấm quẹo trái'. Chúng ta không được đi đường này đâu.\"",
       audioHint: "Biển cấm: Không được rẽ trái nhé!",
       hotspots: [
@@ -118,7 +118,7 @@ const BOOK_DATA = {
       pageNumber: 4,
       storyIndex: 4,
       leftImage: "assets/pages/story_4_left.jpg",
-      header: "KIM THANH LÊ HUỲNH",
+      header: "LÊ HUỲNH KIM THANH",
       text: "Mai gật đầu hiểu ý. Cô bé cùng bác Hùng tiếp tục đạp xe đi thẳng. Mai nhận ra rằng nếu mình chú ý quan sát biển báo, mình sẽ biết cách đi đúng đường và không làm ảnh hưởng đến các phương tiện khác. \"Ồ, hóa ra biển báo giống như những người chỉ đường thầm lặng bác nhỉ!\" Mai reo lên.",
       audioHint: "Biển báo như những người chỉ đường thầm lặng.",
       hotspots: [
@@ -150,8 +150,8 @@ const BOOK_DATA = {
       pageNumber: 5,
       storyIndex: 5,
       leftImage: "assets/pages/story_5_left.jpg",
-      header: "KIM THANH LÊ HUỲNH",
-      text: "Sau đó, hai bác cháu đi ngang qua một làn đường rộng hơn. Ở đó có một biển báo hình tròn màu xanh lục, bên trong có hình một chiếc xe ô tô màu trắng. Bác Hùng giải thích: \"Đây là biển 'Ưu tiên xe ô tô'. Ở làn đường này, xe ô tô được ưu tiên đi, nên xe đạp của Mai mình nên đi sát vào lề đường bên phải cho an toàn nhé.\"",
+      header: "LÊ HUỲNH KIM THANH",
+      text: "Sau đó, hai bác cháu đi ngang qua một làn đường rộng hơn. Ở đó có một biển báo hình tròn màu xanh lục, bên trong có hình một chiếc xe ô tô màu trắng. Bác Hùng giải thích: \"Đây là biển 'Ưu tiên xe ô tô'. Ở làn đường này, xe ô tô được ưu tiên đi, nên xe đạp của Mai, mình nên đi sát vào lề đường bên phải cho an toàn nhé.\"",
       audioHint: "Biển xanh: Làn đường ưu tiên cho xe ô tô.",
       hotspots: [
         {
@@ -193,9 +193,9 @@ const BOOK_DATA = {
       pageNumber: 6,
       storyIndex: 6,
       leftImage: "assets/pages/story_6_left.jpg",
-      header: "KIM THANH LÊ HUỲNH",
-      text: "Đang đi, Mai thấy một biển báo hình tròn viền đỏ, ở giữa có số '40' rất lớn. Mai thắc mắc: \"Số 40 này có nghĩa là gì vậy bác Hùng?\". Bác Hùng cười: \"Đó là biển báo 'Tốc độ cho phép tối đa là 40 km/h'. Các xe không được đi nhanh hơn con số này để đảm bảo mọi người trên đường đều an toàn.\"",
-      audioHint: "Biển báo tốc độ: Tối đa 40 km/h.",
+      header: "LÊ HUỲNH KIM THANH",
+      text: "Đang đi, Mai thấy một biển báo hình tròn viền đỏ, ở giữa có số '40' rất lớn. Mai thắc mắc: \"Số 40 này có nghĩa là gì vậy bác Hùng?\". Bác Hùng cười: \"Đó là biển báo 'Tốc độ cho phép tối đa là 40 ki-lô-mét trên giờ'. Các xe không được đi nhanh hơn con số này để đảm bảo mọi người trên đường đều an toàn.\"",
+      audioHint: "Biển báo tốc độ: Tối đa 40 ki-lô-mét trên giờ.",
       hotspots: [
         {
           id: "speed-limit-40",
@@ -225,7 +225,7 @@ const BOOK_DATA = {
       pageNumber: 7,
       storyIndex: 7,
       leftImage: "assets/pages/story_7_left.jpg",
-      header: "KIM THANH LÊ HUỲNH",
+      header: "LÊ HUỲNH KIM THANH",
       text: "Mai quan sát các chú tài xế trên đường. Đúng thật, các xe đều đi rất thong thả, không ai phóng nhanh vượt ẩu cả. Mai cảm thấy yên tâm hơn hẳn khi hiểu được ý nghĩa của con số 40 kỳ diệu đó. Cô bé tự nhủ khi lớn lên lái xe, mình cũng sẽ tuân thủ tốc độ như thế.",
       audioHint: "Tất cả mọi người cùng đi thong thả và an toàn.",
       hotspots: [
@@ -257,7 +257,7 @@ const BOOK_DATA = {
       pageNumber: 8,
       storyIndex: 8,
       leftImage: "assets/pages/story_8_left.jpg",
-      header: "KIM THANH LÊ HUỲNH",
+      header: "LÊ HUỲNH KIM THANH",
       text: "Cuối cùng, hai bác cháu cũng đến được công viên xanh mát. Mai cảm thấy rất tự hào vì hôm nay mình đã học được bao nhiêu điều bổ ích. Những biển báo không còn là những hình vẽ lạ lẫm nữa, mà chúng đã trở thành những người bạn giúp Mai đi đường an toàn.",
       audioHint: "Đến công viên xanh mát, kết thúc hành trình vui vẻ!",
       hotspots: [
@@ -289,7 +289,7 @@ const BOOK_DATA = {
       pageNumber: 9,
       storyIndex: 9,
       leftImage: "assets/pages/story_9_left.jpg",
-      header: "KIM THANH LÊ HUỲNH",
+      header: "LÊ HUỲNH KIM THANH",
       text: "Ngồi nghỉ trên ghế đá, Mai say sưa kể lại cho bác Hùng nghe về những biển báo mình vừa học. Bác Hùng gật đầu tán thưởng và nhắc Mai rằng việc hiểu biển báo chính là cách tốt nhất để bảo vệ bản thân và mọi người xung quanh. Mai mỉm cười, cảm thấy mình đã trưởng thành hơn một chút.",
       audioHint: "Hiểu biển báo là bảo vệ bản thân và mọi người.",
       hotspots: [

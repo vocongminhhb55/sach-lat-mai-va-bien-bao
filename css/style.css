@@ -268,7 +268,7 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
-  background-color: var(--paper-bg);
+  background-color: transparent;
   border-radius: var(--border-radius-book);
   overflow: hidden;
   transform-style: preserve-3d;
@@ -279,15 +279,23 @@ body {
   position: relative;
   width: 50%;
   height: 100%;
-  background-color: var(--paper-bg);
+  background-color: transparent;
   overflow: hidden;
 }
 
 .spread-page-left {
   border-top-left-radius: var(--border-radius-book);
-  border-bottom-left-radius: var(--border-radius-book);
+  border-bottom-left-radius: 0;
   box-shadow: inset 6px 0 16px rgba(0, 0, 0, 0.08);
-  background-color: #0b1120;
+  background-color: transparent;
+  /* Cắt góc dưới bên trái chính xác theo đường nếp gấp - loại bỏ hoàn toàn vết thừa */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 38px 100%, 0 calc(100% - 38px));
+  transition: clip-path 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.spread-page-left:has(.corner-curl-left:hover),
+.spread-page-left.corner-hovered {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 56px 100%, 0 calc(100% - 56px));
 }
 
 .spread-page-right {

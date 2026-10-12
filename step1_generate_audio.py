@@ -25,11 +25,11 @@ STORIES = [
     },
     {
         "page": 5,
-        "text": "Sau đó, hai bác cháu đi ngang qua một làn đường rộng hơn. Ở đó có một biển báo hình tròn màu xanh lục, bên trong có hình một chiếc xe ô tô màu trắng. Bác Hùng giải thích: Đây là biển Ưu tiên xe ô tô. Ở làn đường này, xe ô tô được ưu tiên đi, nên xe đạp của Mai mình nên đi sát vào lề đường bên phải cho an toàn nhé."
+        "text": "Sau đó, hai bác cháu đi ngang qua một làn đường rộng hơn. Ở đó có một biển báo hình tròn màu xanh lục, bên trong có hình một chiếc xe ô tô màu trắng. Bác Hùng giải thích: Đây là biển Ưu tiên xe ô tô. Ở làn đường này, xe ô tô được ưu tiên đi, nên xe đạp của Mai, mình nên đi sát vào lề đường bên phải cho an toàn nhé."
     },
     {
         "page": 6,
-        "text": "Đang đi, Mai thấy một biển báo hình tròn viền đỏ, ở giữa có số 40 rất lớn. Mai thắc mắc: Số 40 này có nghĩa là gì vậy bác Hùng? Bác Hùng cười: Đó là biển báo Tốc độ cho phép tối đa là 40 km/h. Các xe không được đi nhanh hơn con số này để đảm bảo mọi người trên đường đều an toàn."
+        "text": "Đang đi, Mai thấy một biển báo hình tròn viền đỏ, ở giữa có số 40 rất lớn. Mai thắc mắc: Số 40 này có nghĩa là gì vậy bác Hùng? Bác Hùng cười: Đó là biển báo Tốc độ cho phép tối đa là 40 ki-lô-mét trên giờ. Các xe không được đi nhanh hơn con số này để đảm bảo mọi người trên đường đều an toàn."
     },
     {
         "page": 7,

@@ -1,6 +1,6 @@
 # 📖 Sách Lật Tương Tác: Mai và Chuyến Phiêu Lưu Của Những Biển Báo
 
-Dự án sách thiếu nhi điện tử tương tác 3D đa phương tiện, chuyển thể từ tác phẩm **"Mai và Chuyến Phiêu Lưu Của Những Biển Báo"** của tác giả **Kim Thanh Lê Huỳnh**.
+Dự án sách thiếu nhi điện tử tương tác 3D đa phương tiện, chuyển thể từ tác phẩm **"Mai và Chuyến Phiêu Lưu Của Những Biển Báo"** của tác giả **Lê Huỳnh Kim Thanh**.
 
 ---
 
