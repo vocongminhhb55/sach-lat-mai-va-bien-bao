@@ -511,6 +511,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Hiệu ứng hover mép gấp góc trang
+  cornerPrev.addEventListener('mouseenter', () => spreadLeft.classList.add('corner-hovered'));
+  cornerPrev.addEventListener('mouseleave', () => spreadLeft.classList.remove('corner-hovered'));
+  cornerNext.addEventListener('mouseenter', () => spreadRight.classList.add('corner-hovered'));
+  cornerNext.addEventListener('mouseleave', () => spreadRight.classList.remove('corner-hovered'));
+
   // Click vào góc quăn hoặc mép trang
   cornerNext.addEventListener('click', (e) => {
     e.stopPropagation();
