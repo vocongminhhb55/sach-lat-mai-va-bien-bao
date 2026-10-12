@@ -399,10 +399,10 @@ def run_all_unit_tests():
         flip_size_kb = os.path.getsize(flip_mp3) / 1024
         runner.assert_true(flip_size_kb > 5, f"Dung lượng page_flip.mp3 hợp lệ ({flip_size_kb:.1f} KB)", "File quá nhỏ")
 
-    runner.assert_true('id="btn-read-cover"' in html_content, "HTML có nút Nghe đọc bìa (#btn-read-cover)", "Thiếu nút #btn-read-cover")
-    runner.assert_true('btnReadCover' in app_js_content, "JS khởi tạo selector btnReadCover", "Thiếu selector btnReadCover")
+    runner.assert_true('id="btn-read-cover"' not in html_content, "Bìa trước không bị nút che khuất nội dung (theo yêu cầu người dùng)", "Vẫn còn nút #btn-read-cover che bìa")
     runner.assert_true('playCoverAudio' in app_js_content, "JS có hàm playCoverAudio phát giọng đọc bìa", "Thiếu playCoverAudio")
     runner.assert_true('pauseCoverAudio' in app_js_content, "JS có hàm pauseCoverAudio", "Thiếu pauseCoverAudio")
+    runner.assert_true('currentPageIndex === 0' in app_js_content and 'playCoverAudio()' in app_js_content, "Nút Play/Pause ở thanh dock hỗ trợ phát/dừng giọng đọc bìa sách khi ở Page 0", "Thiếu điều khiển cover audio qua dock")
     with open("js/audio-speech.js", "r", encoding="utf-8") as f:
         audio_speech_content = f.read()
     runner.assert_true('assets/audio/page_flip.mp3' in audio_speech_content, "Audio engine tích hợp tiếng lật sách chân thực (page_flip.mp3)", "Chưa dùng page_flip.mp3 trong audio-speech.js")

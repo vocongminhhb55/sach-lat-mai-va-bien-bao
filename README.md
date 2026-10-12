@@ -11,15 +11,15 @@ Dự án sách thiếu nhi điện tử tương tác 3D đa phương tiện, chu
 
 ## ✨ Các Tính Năng Nổi Bật
 
-1. **Hiệu Ứng Lật Sách 3D Chân Thực & Hiển Thị Đồng Bộ Tức Thì (Pure CSS3D Engine):**
+1. **Hiệu Ứng Lật Sách 3D Chân Thực & Tiếng Sột Soạt Của Giấy (Pure CSS3D Engine):**
    - Mô phỏng chuyển động lật mở trang sách giấy 3D mượt mà với bóng đổ động và độ cong tự nhiên.
-   - **Âm thanh lật giấy thật (`page_flip.mp3`):** Tiếng sột soạt đa tầng tự nhiên, êm dịu thay thế hoàn toàn âm thanh Web Audio nhân tạo cũ.
+   - **Âm thanh sột soạt của giấy (`page_flip.mp3`):** Tiếng lật lá sách kết hợp tiếng trượt miết giấy tự nhiên, mang lại cảm giác mở trang sách giấy chân thực $100\%$.
    - **Hiển thị trang mới tức thì dưới lá lật ($t = 0$):** Khi lật sang trang mới, nội dung trang bên dưới lập tức là trang đích, không còn hiện tượng hiển thị trang cũ hay giật trễ hình ảnh.
    - Bìa trước mở thẳng vào Trang 1; ruột sách 2 trang mở đôi cân đối; màn hình kết thúc chúc mừng bé hoàn thành chuyến đi.
 
 2. **Đọc Bìa Sách Tiếng Việt Truyền Cảm (Cover Audio):**
-   - Nút **"Nghe đọc bìa"** trên bìa trước phát giọng đọc tên sách và tên tác giả *"Mai và Chuyến Phiêu Lưu Của Những Biển Báo. Tác giả: Lê Huỳnh Kim Thanh."*
-   - Tích hợp thông minh với nút Play/Pause ở thanh dock điều khiển dưới.
+   - Bìa trước giữ sự thoáng đãng $100\%$, không bị bất kỳ nút bấm nào che khuất tranh minh họa và tên tác giả **Lê Huỳnh Kim Thanh**.
+   - Khi ở bìa trước (Page 0), người đọc chỉ cần bấm nút **Play** ở thanh dock bên dưới để nghe giọng đọc tên sách và tên tác giả. Bấm trực tiếp vào bìa sách sẽ lật mở ngay vào Trang 1.
 
 3. **Video Hoạt Hình MP4 Sống Động (Audio-Envelope Lip Sync & Eye Blink):**
    - Tranh minh họa bên trái được chuyển hóa thành video hoạt hình sống động sinh từ mô hình AI và OpenCV trên GPU.

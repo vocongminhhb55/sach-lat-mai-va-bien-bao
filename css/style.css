@@ -221,52 +221,6 @@ body {
   pointer-events: none;
 }
 
-/* Nút Nghe Đọc Bìa Sách */
-.btn-read-cover {
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
-  background: rgba(15, 23, 42, 0.78);
-  color: #fbbf24;
-  border: 1.5px solid rgba(251, 191, 36, 0.45);
-  border-radius: 30px;
-  padding: 10px 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  z-index: 40;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
-  transition: all 0.22s ease;
-  outline: none;
-}
-
-.btn-read-cover:hover {
-  background: rgba(15, 23, 42, 0.95);
-  color: #fef08a;
-  border-color: #f59e0b;
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 12px 28px rgba(245, 158, 11, 0.35);
-}
-
-.btn-read-cover.speaking {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #ffffff;
-  border-color: #fde047;
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.4), 0 8px 24px rgba(245, 158, 11, 0.6);
-  animation: pulseCoverBtn 1.5s infinite;
-}
-
-@keyframes pulseCoverBtn {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.04); box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.2), 0 12px 30px rgba(245, 158, 11, 0.7); }
-  100% { transform: scale(1); }
-}
-
 /* Animation mở bìa 3D */
 .book-cover-front.flipping-open {
   animation: flipCoverOpen 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;

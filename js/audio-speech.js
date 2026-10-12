@@ -60,7 +60,7 @@ class SpeechNarrator {
         this.flipAudio.preload = 'auto';
       }
       this.flipAudio.currentTime = 0;
-      this.flipAudio.volume = 0.75;
+      this.flipAudio.volume = 0.85;
       this.flipAudio.play().catch(e => {
         // Fallback nhẹ nếu browser chặn
       });
