@@ -72,18 +72,6 @@ body {
   letter-spacing: 0.3px;
 }
 
-.badge-tag {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #ffffff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
-}
-
 .speaking-indicator {
   display: flex;
   align-items: center;
@@ -231,47 +219,6 @@ body {
   height: 100%;
   background: linear-gradient(to left, rgba(0, 0, 0, 0.4), transparent);
   pointer-events: none;
-}
-
-/* Gợi ý mở sách ở góc bìa */
-.cover-corner-hint {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 16px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.cover-corner-hint:hover {
-  transform: translate(-4px, -4px);
-}
-
-.corner-hint-text {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
-  color: #fbbf24;
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid rgba(245, 158, 11, 0.5);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  animation: pulseHint 2s infinite ease-in-out;
-  pointer-events: none;
-}
-
-@keyframes pulseHint {
-  0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
-  50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6); }
 }
 
 /* Animation mở bìa 3D */

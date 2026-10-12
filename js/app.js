@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Các phần tử DOM giao diện chính
   const book = document.getElementById('book');
   const coverFront = document.getElementById('cover-front');
-  const coverCornerHint = document.getElementById('cover-corner-hint');
   const bookSpread = document.getElementById('book-spread');
   const spreadLeft = document.getElementById('spread-left');
   const spreadRight = document.getElementById('spread-right');
