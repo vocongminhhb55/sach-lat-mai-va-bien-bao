@@ -36,6 +36,7 @@ Tất cả các quyết định thiết kế và thay đổi trong mã nguồn �
 | **8** | Hiệu ứng ở góc dưới bên trái: Dưới nếp gấp thì phải không có hình, đằng này dưới nếp gấp vẫn còn hình nhìn rất kỳ. | Áp dụng `clip-path: polygon(0 0, 100% 0, 100% 100%, 38px 100%, 0 calc(100% - 38px))` trên container video và video player; gỡ bỏ màu nền ivory của khung bên dưới để mép gấp rỗng xuyên thấu 100%. | ✅ Đã hoàn thành |
 | **9** | Kiểm tra và sửa lỗi chính tả trong bài, chỉnh lại voice nếu có sai; Đổi tên tác giả thành **Lê Huỳnh Kim Thanh**; Chỗ góc bo tròn nếp gấp vẫn còn sót một vết nhỏ; Video zoom ra vào bị tách rời khỏi quyển sách; Sinh video animation từ hình ban đầu kiểu môi mấp máy theo chữ bằng model local. | - Đổi tên tác giả thành **Lê Huỳnh Kim Thanh** trên mọi tệp, header, và inpaint sửa lại bìa sách [cover_front.jpg](file:///assets/pages/cover_front.jpg).<br>- Rà soát chính tả tiếng Việt toàn bộ 9 trang truyện, re-synthesize toàn bộ 9 file audio mp3 bằng VieNeu-TTS.<br>- Căn chỉnh lại word timestamps qua Faster-Whisper.<br>- Triệt tiêu hoàn toàn vệt góc nếp gấp bằng cách bỏ `border-bottom-left-radius` của trang trái.<br>- Viết pipeline `step3_generate_videos.py` khóa cứng khung hình ngoài (không zoom camera), tạo cử động môi mấp máy theo cường độ âm thanh (lip-sync via audio envelope), mắt chớp tự nhiên chu kỳ 3-4s, biểu cảm động cho 9 video MP4. | ✅ Đã hoàn thành |
 | **10** | Khúc cuối "Chúc Mừng Bé Đã Khám Phá Hết Sách!" không thể quay lại trang trước hay bấm đọc lại từ đầu, bị kẹt luôn. | Sửa lỗi kẹt màn hình kết thúc (Page 10): Phân nhánh lại hàm `flipToPage`, ẩn `coverBack`, khôi phục `bookSpread`, hỗ trợ quay lại trang 9, đọc lại từ đầu từ trang 1 và chọn trang qua Drawer; Bổ sung nút "⬅ Quay Về Trang 9" trên màn hình chúc mừng. | ✅ Đã hoàn thành |
+| **11** | Bấm tạm dừng và quay lại thì không đọc tiếp mà đọc lại từ đầu (sửa để đọc tiếp từ vị trí tạm dừng); Thanh tiến độ có thể điều chỉnh được (seek); Bấm vào chữ là tự động nhảy đọc từ chữ đó; Yêu cầu kiểm tra an toàn không phá vỡ logic cũ. | - Viết lại bộ điều khiển: Tách riêng `pauseStoryAudio()` (bảo lưu `currentTime` và tiến trình) và `resumeStoryAudio()` (tiếp tục phát từ `currentTime` cũ).<br>- Thêm hàm `seekStoryAudio(targetTime)`: Bấm vào thanh tiến trình `#audio-progress-wrap` hoặc click vào bất kỳ từ nào (`.word`) đều lập tức nhảy audio tới giây đó và cập nhật đồng bộ highlight karaoke.<br>- Bổ sung CSS hover cho từng từ và thanh tiến trình.<br>- Bổ sung Nhóm 7 trong test suite, nâng tổng số lên 150 unit tests PASS 100%. | ✅ Đã hoàn thành |
 
 ---
 
@@ -178,7 +179,7 @@ stateDiagram-v2
 
 ## 🧪 PHẦN 4: HỆ THỐNG KIỂM THỬ TỰ ĐỘNG (UNIT TESTS)
 
-Kịch bản kiểm thử được cài đặt trong `step4_run_tests.py`, bao gồm **138 test cases** chia làm 6 nhóm:
+Kịch bản kiểm thử được cài đặt trong `step4_run_tests.py`, bao gồm **150 test cases** chia làm 7 nhóm:
 
 1. **Nhóm 1 (27 tests):** Kiểm tra 9 file audio tiếng Việt (tồn tại, định dạng MP3, dung lượng $> 100\text{ KB}$, thời lượng chuẩn từ $15\text{s} - 35\text{s}$).
 2. **Nhóm 2 (45 tests):** Kiểm tra 9 video hoạt hình MP4 qua OpenCV (giải mã được, chuẩn độ phân giải $720 \times 1110$, chuẩn $30\text{ fps}$, thời lượng khung hình đầy đủ).
@@ -186,12 +187,13 @@ Kịch bản kiểm thử được cài đặt trong `step4_run_tests.py`, bao g
 4. **Nhóm 4 (4 tests):** Mô phỏng thuật toán Karaoke Highlight & Unhighlight (đảm bảo tính độc quyền của highlight, chữ cũ được unhighlight $100\%$, không đè vệt màu).
 5. **Nhóm 5 (13 tests):** Kiểm tra logic điều hướng tuần tự (bìa trước vào thẳng trang 1, trang $1 \dots 9$, vào bìa sau 10, lùi từ 10 về 9, không bao giờ nhảy cóc).
 6. **Nhóm 6 (20 tests):** Kiểm tra máy trạng thái Page 10 (tồn tại các nút bấm DOM, selector trong JS, chuyển trạng thái từ 10 sang 1 khôi phục spread, lùi về 9 mượt mà, nhảy drawer trang $2 \dots 8$, đóng về bìa trước, không bao giờ bị kẹt lại).
+7. **Nhóm 7 (12 tests):** Kiểm tra cơ chế Tạm dừng (Pause bảo lưu `currentTime`), Đọc tiếp (Resume từ mốc cũ), Bấm vào từng từ để nhảy (`seekStoryAudio`) và Tua bằng thanh tiến trình.
 
 ### Cách chạy kiểm thử:
 ```powershell
 python step4_run_tests.py
 ```
-> Kết quả tiêu chuẩn: **138 TEST PASS | 0 TEST FAIL (100%)**.
+> Kết quả tiêu chuẩn: **150 TEST PASS | 0 TEST FAIL (100%)**.
 
 ---
 
@@ -235,3 +237,4 @@ git push origin main
 
 ---
 *Tài liệu được khởi tạo và chuẩn hóa tự động vào ngày 12/10/2026. Mọi trợ lý AI tương lai vui lòng đọc kỹ tài liệu này trước khi thực hiện bất kỳ thay đổi nào trên mã nguồn.*
+

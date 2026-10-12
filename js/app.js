@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const storyParagraph = document.getElementById('story-paragraph');
   const pageNumIndicator = document.getElementById('page-num-indicator');
   const audioProgressBar = document.getElementById('audio-progress-bar');
+  const audioProgressWrap = document.getElementById('audio-progress-wrap');
   const flippingLeaf = document.getElementById('flipping-leaf');
   const leafFront = document.getElementById('leaf-front');
   const leafBack = document.getElementById('leaf-back');
@@ -110,8 +111,54 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 3. ĐỒNG BỘ GIỌNG ĐỌC TIẾNG VIỆT & KARAOKE HIGHLIGHT / UNHIGHLIGHT
+  function updateKaraokeHighlight() {
+    if (currentPageIndex < 1 || currentPageIndex > 9) return;
+    const pageInfo = timestampsData[currentPageIndex] || { words: [] };
+    const words = pageInfo.words;
+    const t = mainAudio.currentTime;
+
+    // Cập nhật thanh tiến trình audio
+    if (mainAudio.duration && !isNaN(mainAudio.duration)) {
+      const pct = Math.min(100, (t / mainAudio.duration) * 100);
+      audioProgressBar.style.width = `${pct}%`;
+    }
+
+    // Duyệt qua từng từ để Highlight từ đang đọc và Unhighlight từ cũ
+    words.forEach((w, idx) => {
+      const el = document.getElementById(`word-${currentPageIndex}-${idx}`);
+      if (!el) return;
+
+      if (t >= w.start && t < w.end) {
+        // Từ đang được đọc -> BẬT sáng nổi bật
+        el.classList.add('karaoke-current');
+        el.classList.remove('karaoke-past');
+      } else if (t >= w.end) {
+        // Đã đọc xong từ này -> TẮT sáng (Unhighlight ngay lập tức) & chuyển sang màu đã đọc
+        el.classList.remove('karaoke-current');
+        el.classList.add('karaoke-past');
+      } else {
+        // Từ tương lai chưa đọc tới -> Xóa highlight
+        el.classList.remove('karaoke-current', 'karaoke-past');
+      }
+    });
+  }
+
+  function startKaraokeLoop() {
+    if (animFrameId) {
+      cancelAnimationFrame(animFrameId);
+      animFrameId = null;
+    }
+    function loop() {
+      if (mainAudio.paused || mainAudio.ended) return;
+      updateKaraokeHighlight();
+      animFrameId = requestAnimationFrame(loop);
+    }
+    animFrameId = requestAnimationFrame(loop);
+  }
+
   function startPlayingStoryAudio(storyNum) {
     stopCurrentAudio();
+    currentPageIndex = storyNum;
 
     mainAudio.src = `assets/audio/story_${storyNum}.mp3`;
     mainAudio.currentTime = 0;
@@ -119,79 +166,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     speakingIndicator.classList.add('active');
     setPlayingState(true);
+    updateKaraokeHighlight();
 
-    const pageInfo = timestampsData[storyNum] || { words: [] };
-    const words = pageInfo.words;
-
-    // Vòng lặp đồng bộ thời gian thực theo frame màn hình (requestAnimationFrame)
-    function syncKaraoke() {
-      if (mainAudio.paused || mainAudio.ended) return;
-
-      const t = mainAudio.currentTime;
-
-      // Cập nhật thanh tiến trình audio
-      if (mainAudio.duration) {
-        const pct = Math.min(100, (t / mainAudio.duration) * 100);
-        audioProgressBar.style.width = `${pct}%`;
-      }
-
-      // Duyệt qua từng từ để Highlight từ đang đọc và Unhighlight từ cũ
-      words.forEach((w, idx) => {
-        const el = document.getElementById(`word-${storyNum}-${idx}`);
-        if (!el) return;
-
-        if (t >= w.start && t < w.end) {
-          // Từ đang được đọc -> BẬT sáng nổi bật
-          el.classList.add('karaoke-current');
-          el.classList.remove('karaoke-past');
-        } else if (t >= w.end) {
-          // Đã đọc xong từ này -> TẮT sáng (Unhighlight ngay lập tức) & chuyển sang màu đã đọc
-          el.classList.remove('karaoke-current');
-          el.classList.add('karaoke-past');
-        } else {
-          // Từ tương lai chưa đọc tới -> Xóa highlight
-          el.classList.remove('karaoke-current', 'karaoke-past');
-        }
-      });
-
-      animFrameId = requestAnimationFrame(syncKaraoke);
-    }
-
-    mainAudio.onplay = () => {
-      animFrameId = requestAnimationFrame(syncKaraoke);
-    };
-
-    // Khi đọc xong trang này
-    mainAudio.onended = () => {
-      cancelAnimationFrame(animFrameId);
-      speakingIndicator.classList.remove('active');
-      audioProgressBar.style.width = '100%';
-
-      // Đánh dấu tất cả từ đã đọc xong
-      document.querySelectorAll(`#story-paragraph .word`).forEach(el => {
-        el.classList.remove('karaoke-current');
-        el.classList.add('karaoke-past');
-      });
-
-      // Tự động lật sang trang sau nếu bật autoTurnPages
-      if (autoTurnPages && isAutoPlaying) {
-        autoTurnTimeout = setTimeout(() => {
-          if (currentPageIndex < 9) {
-            flipToPage(currentPageIndex + 1, 'forward');
-          } else {
-            flipToPage(10, 'forward');
-          }
-        }, 1200); // Khoảng nghỉ tự nhiên 1.2s để bé ngắm tranh
-      } else {
-        setPlayingState(false);
-      }
-    };
-
-    mainAudio.play().catch(err => {
+    mainAudio.play().then(() => {
+      startKaraokeLoop();
+    }).catch(err => {
       console.warn("Audio autoplay blocked by browser policy:", err);
     });
   }
 
+  // Tạm dừng đọc: Giữ nguyên currentTime và thanh tiến trình
+  function pauseStoryAudio() {
+    if (animFrameId) {
+      cancelAnimationFrame(animFrameId);
+      animFrameId = null;
+    }
+    if (autoTurnTimeout) {
+      clearTimeout(autoTurnTimeout);
+      autoTurnTimeout = null;
+    }
+    mainAudio.pause();
+    storyVideo.pause();
+    speakingIndicator.classList.remove('active');
+    setPlayingState(false);
+  }
+
+  // Đọc tiếp từ vị trí tạm dừng
+  function resumeStoryAudio() {
+    if (currentPageIndex < 1 || currentPageIndex > 9) return;
+
+    const expectedSrc = `assets/audio/story_${currentPageIndex}.mp3`;
+    if (!mainAudio.src || !mainAudio.src.includes(expectedSrc) || mainAudio.ended) {
+      startPlayingStoryAudio(currentPageIndex);
+      return;
+    }
+
+    speakingIndicator.classList.add('active');
+    setPlayingState(true);
+    storyVideo.play().catch(() => {});
+
+    mainAudio.play().then(() => {
+      startKaraokeLoop();
+    }).catch(err => {
+      console.warn("Audio resume blocked by browser policy:", err);
+    });
+  }
+
+  // Dừng hẳn audio (Khi đổi trang)
   function stopCurrentAudio() {
     if (animFrameId) {
       cancelAnimationFrame(animFrameId);
@@ -205,6 +226,61 @@ document.addEventListener('DOMContentLoaded', () => {
     speakingIndicator.classList.remove('active');
     audioProgressBar.style.width = '0%';
   }
+
+  // Nhảy tới mốc thời gian cụ thể trong trang (Seek to time)
+  function seekStoryAudio(timeInSeconds, autoPlay = true) {
+    if (currentPageIndex < 1 || currentPageIndex > 9) return;
+
+    const expectedSrc = `assets/audio/story_${currentPageIndex}.mp3`;
+    if (!mainAudio.src || !mainAudio.src.includes(expectedSrc)) {
+      mainAudio.src = expectedSrc;
+    }
+
+    if (mainAudio.duration && !isNaN(mainAudio.duration)) {
+      timeInSeconds = Math.max(0, Math.min(mainAudio.duration - 0.1, timeInSeconds));
+    } else {
+      timeInSeconds = Math.max(0, timeInSeconds);
+    }
+
+    mainAudio.currentTime = timeInSeconds;
+    updateKaraokeHighlight();
+
+    if (autoPlay) {
+      resumeStoryAudio();
+    }
+  }
+
+  mainAudio.onplay = () => {
+    startKaraokeLoop();
+  };
+
+  mainAudio.onended = () => {
+    if (animFrameId) {
+      cancelAnimationFrame(animFrameId);
+      animFrameId = null;
+    }
+    speakingIndicator.classList.remove('active');
+    audioProgressBar.style.width = '100%';
+
+    // Đánh dấu tất cả từ đã đọc xong
+    document.querySelectorAll(`#story-paragraph .word`).forEach(el => {
+      el.classList.remove('karaoke-current');
+      el.classList.add('karaoke-past');
+    });
+
+    // Tự động lật sang trang sau nếu bật autoTurnPages
+    if (autoTurnPages && isAutoPlaying) {
+      autoTurnTimeout = setTimeout(() => {
+        if (currentPageIndex < 9) {
+          flipToPage(currentPageIndex + 1, 'forward');
+        } else {
+          flipToPage(10, 'forward');
+        }
+      }, 1200); // Khoảng nghỉ tự nhiên 1.2s để bé ngắm tranh
+    } else {
+      setPlayingState(false);
+    }
+  };
 
   function setPlayingState(isPlaying) {
     isAutoPlaying = isPlaying;
@@ -650,13 +726,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (isAutoPlaying) {
-      stopCurrentAudio();
-      storyVideo.pause();
-      setPlayingState(false);
+      pauseStoryAudio();
     } else {
-      setPlayingState(true);
-      storyVideo.play().catch(() => {});
-      startPlayingStoryAudio(currentPageIndex);
+      resumeStoryAudio();
     }
   });
 
@@ -700,6 +772,30 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnBackPage9) {
     btnBackPage9.addEventListener('click', () => {
       flipToPage(9, 'backward');
+    });
+  }
+
+  // Bấm vào từng từ để đọc từ vị trí đó (Click word to seek)
+  storyParagraph.addEventListener('click', (e) => {
+    const wordSpan = e.target.closest('.word');
+    if (!wordSpan) return;
+    e.stopPropagation();
+    const start = parseFloat(wordSpan.getAttribute('data-start'));
+    if (!isNaN(start)) {
+      seekStoryAudio(start, true);
+    }
+  });
+
+  // Bấm vào thanh tiến trình để tua nhanh/chậm (Seek on progress bar)
+  if (audioProgressWrap) {
+    audioProgressWrap.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (currentPageIndex < 1 || currentPageIndex > 9) return;
+      if (!mainAudio.duration || isNaN(mainAudio.duration)) return;
+      const rect = audioProgressWrap.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+      seekStoryAudio(ratio * mainAudio.duration, true);
     });
   }
 

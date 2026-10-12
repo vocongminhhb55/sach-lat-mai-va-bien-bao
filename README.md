@@ -27,10 +27,13 @@ Dự án sách thiếu nhi điện tử tương tác 3D đa phương tiện, chu
    - Sử dụng mô hình tổng hợp giọng đọc AI chất lượng cao (voice nữ miền Nam `Kim Thanh`), truyền cảm, phát âm rõ ràng, phù hợp lứa tuổi thiếu nhi.
    - Chuẩn hóa $100\%$ chính tả tiếng Việt cho toàn bộ 9 trang truyện.
 
-4. **Hiệu Ứng Chữ Chạy Karaoke Chính Xác Từng Từ (Word-level Highlight & Unhighlight):**
+4. **Hiệu Ứng Chữ Chạy Karaoke & Tương Tác Bấm Chữ / Tua Tiến Trình:**
    - Mốc thời gian từng từ được trích xuất bằng mô hình AI **Faster-Whisper** trên GPU CUDA.
    - Khi audio phát tới đâu, từ đó sẽ phát sáng hào quang cam vàng rực rỡ (`.karaoke-current`).
    - Ngay khi đọc xong, từ tự động đổi sang màu xám êm dịu (`.karaoke-past`), **tuyệt đối không bị đè highlight** hay sót chữ.
+   - **Bấm vào chữ để đọc (Word-Click Seek):** Bé hoặc phụ huynh có thể bấm vào bất kỳ từ nào trên trang để nghe giọng đọc nhảy ngay tới từ đó!
+   - **Tua thanh tiến trình:** Bấm trực tiếp vào thanh tiến độ để tua nhanh/chậm tùy thích.
+   - **Đọc tiếp mượt mà (Resume Playback):** Bấm Tạm dừng (Pause) rồi bấm Tiếp tục (Play) sẽ đọc tiếp đúng vị trí đang dừng, không bao giờ bị nhảy đọc lại từ đầu trang.
 
 5. **Nếp Gấp Góc Trang Rỗng Xuyên Thấu Chân Thực (Corner Fold Clip-Path):**
    - Mép nếp gấp góc dưới bên trái được cắt chéo chính xác bằng thuật toán `clip-path` đa giác trên cả khung hình và video player.
@@ -53,13 +56,13 @@ Dự án sách thiếu nhi điện tử tương tác 3D đa phương tiện, chu
 
 ---
 
-## 🧪 Hệ Thống Kiểm Thử Tự Động (138 Unit Tests)
+## 🧪 Hệ Thống Kiểm Thử Tự Động (150 Unit Tests)
 
 Dự án tích hợp bộ kiểm thử toàn diện `step4_run_tests.py` kiểm tra mọi thành phần của hệ thống:
 ```powershell
 python step4_run_tests.py
 ```
-**Kết quả: 138 TEST PASS | 0 TEST FAIL (100% Đạt Chuẩn).**
+**Kết quả: 150 TEST PASS | 0 TEST FAIL (100% Đạt Chuẩn).**
 
 ---
 

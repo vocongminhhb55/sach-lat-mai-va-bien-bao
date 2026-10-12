@@ -448,18 +448,26 @@ body {
    ========================================================================== */
 .word {
   display: inline-block;
-  padding: 2px 2px;
+  padding: 2px 3px;
   margin: 0 1px;
   border-radius: 4px;
-  transition: background-color 0.12s ease, color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.word:hover {
+  background-color: rgba(245, 158, 11, 0.18);
+  color: #b45309;
+  transform: scale(1.04);
 }
 
 /* Từ đang được đọc -> BẬT sáng nổi bật */
 .word.karaoke-current {
-  background: linear-gradient(120deg, #fef08a 0%, #fde047 100%);
-  color: #854d0e;
+  background: linear-gradient(120deg, #fef08a 0%, #fde047 100%) !important;
+  color: #854d0e !important;
   font-weight: 700;
-  transform: scale(1.05);
+  transform: scale(1.06);
   box-shadow: 0 2px 10px rgba(250, 204, 21, 0.55);
 }
 
@@ -470,6 +478,12 @@ body {
   transform: scale(1);
   box-shadow: none;
   font-weight: 500;
+}
+
+.word.karaoke-past:hover {
+  background-color: rgba(245, 158, 11, 0.18);
+  color: #b45309;
+  transform: scale(1.04);
 }
 
 /* Footer trang phải */
@@ -484,17 +498,27 @@ body {
 .audio-progress-bar-wrap {
   flex: 1;
   max-width: 200px;
-  height: 5px;
+  height: 8px;
   background: rgba(0, 0, 0, 0.08);
-  border-radius: 3px;
+  border-radius: 4px;
   overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.audio-progress-bar-wrap:hover {
+  height: 10px;
+  background: rgba(0, 0, 0, 0.14);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
 }
 
 .audio-progress-bar {
   width: 0%;
   height: 100%;
   background: linear-gradient(90deg, #f59e0b, #ef4444);
-  border-radius: 3px;
+  border-radius: 4px;
+  pointer-events: none;
   transition: width 0.1s linear;
 }
 

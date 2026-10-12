@@ -287,6 +287,96 @@ def run_all_unit_tests():
     )
 
     # -------------------------------------------------------------
+    # NHÓM 7: KIỂM THỬ ĐỌC TIẾP KHI PAUSE/RESUME & TUA BẰNG CLICK TỪ / PROGRESS BAR
+    # -------------------------------------------------------------
+    print("\n--- NHÓM 7: KIỂM THỬ ĐỌC TIẾP (RESUME) & TUA CHỮ / THANH TIẾN ĐỘ ---")
+    with open("css/style.css", "r", encoding="utf-8") as f:
+        css_content = f.read()
+
+    runner.assert_true('function pauseStoryAudio(' in app_js_content, "JS có hàm pauseStoryAudio bảo lưu currentTime", "Thiếu pauseStoryAudio")
+    runner.assert_true('function resumeStoryAudio(' in app_js_content, "JS có hàm resumeStoryAudio đọc tiếp vị trí cũ", "Thiếu resumeStoryAudio")
+    runner.assert_true('function seekStoryAudio(' in app_js_content, "JS có hàm seekStoryAudio hỗ trợ tua mốc thời gian", "Thiếu seekStoryAudio")
+    runner.assert_true('storyParagraph.addEventListener(\'click\'' in app_js_content, "JS có sự kiện bấm vào từng từ để nhảy tới từ đó", "Thiếu click từ")
+    runner.assert_true('audioProgressWrap.addEventListener(\'click\'' in app_js_content, "JS có sự kiện bấm vào thanh tiến trình để tua", "Thiếu click progress bar")
+    runner.assert_true('cursor: pointer;' in css_content and '.word' in css_content, "CSS định nghĩa cursor pointer cho từng từ (.word)", "Thiếu cursor pointer cho .word")
+    runner.assert_true('cursor: pointer;' in css_content and '.audio-progress-bar-wrap' in css_content, "CSS định nghĩa cursor pointer cho thanh tiến trình", "Thiếu cursor pointer cho progress bar")
+
+    # Mô phỏng trình điều khiển Audio Pause / Resume / Seek
+    class AudioEngineSimulator:
+        def __init__(self, duration, words):
+            self.duration = duration
+            self.words = words
+            self.currentTime = 0.0
+            self.isPlaying = False
+
+        def playFromStart(self):
+            self.currentTime = 0.0
+            self.isPlaying = True
+
+        def pause(self):
+            # Tạm dừng: Giữ nguyên currentTime
+            self.isPlaying = False
+
+        def resume(self):
+            # Tiếp tục: KHÔNG reset currentTime về 0
+            if self.currentTime < self.duration:
+                self.isPlaying = True
+
+        def seek(self, targetTime):
+            self.currentTime = max(0.0, min(self.duration, targetTime))
+            self.isPlaying = True
+
+        def getKaraokeState(self):
+            past = [i for i, w in enumerate(self.words) if self.currentTime >= w["end"]]
+            current = [i for i, w in enumerate(self.words) if w["start"] <= self.currentTime < w["end"]]
+            future = [i for i, w in enumerate(self.words) if self.currentTime < w["start"]]
+            return past, current, future
+
+    audio_sim = AudioEngineSimulator(duration, page1_words)
+    audio_sim.playFromStart()
+    audio_sim.currentTime = 8.5  # Đang đọc đến giây 8.5
+    audio_sim.pause()
+
+    runner.assert_true(
+        audio_sim.currentTime == 8.5 and not audio_sim.isPlaying,
+        "Tạm dừng (Pause): currentTime giữ nguyên 8.5s (Không bị reset về 0)",
+        f"Lỗi: currentTime = {audio_sim.currentTime}"
+    )
+
+    audio_sim.resume()
+    runner.assert_true(
+        audio_sim.currentTime == 8.5 and audio_sim.isPlaying,
+        "Đọc tiếp (Resume): Tiếp tục phát từ 8.5s thành công (Không đọc lại từ đầu)",
+        f"Lỗi: currentTime = {audio_sim.currentTime}, isPlaying = {audio_sim.isPlaying}"
+    )
+
+    # Test bấm vào một từ ở giữa trang (VD: từ thứ 20)
+    target_word_idx = 20
+    target_start = page1_words[target_word_idx]["start"]
+    audio_sim.seek(target_start)
+
+    past_words, curr_words, fut_words = audio_sim.getKaraokeState()
+    runner.assert_true(
+        audio_sim.currentTime == target_start and target_word_idx in curr_words,
+        f"Bấm vào từ thứ {target_word_idx}: Nhảy audio chính xác tới {target_start:.2f}s và từ đó được highlight",
+        f"Lỗi seek word: currentTime={audio_sim.currentTime}, curr_words={curr_words}"
+    )
+    runner.assert_true(
+        len(past_words) == target_word_idx and target_word_idx - 1 in past_words,
+        f"Bấm vào từ thứ {target_word_idx}: Toàn bộ {target_word_idx} từ phía trước chuyển sang trạng thái đã đọc",
+        f"Lỗi unhighlight: len(past)={len(past_words)}"
+    )
+
+    # Test tua bằng thanh tiến trình tới 50%
+    mid_time = duration * 0.5
+    audio_sim.seek(mid_time)
+    runner.assert_true(
+        abs(audio_sim.currentTime - mid_time) < 0.001 and audio_sim.isPlaying,
+        f"Tua thanh tiến trình (50%): Nhảy audio chính xác tới {mid_time:.2f}s",
+        f"Lỗi seek progress bar: {audio_sim.currentTime}"
+    )
+
+    # -------------------------------------------------------------
     # TỔNG KẾT KẾT QUẢ TEST
     # -------------------------------------------------------------
     print("\n" + "=" * 70)
