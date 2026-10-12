@@ -3,38 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mai và Chuyến Phiêu Lưu Của Những Biển Báo - Sách Lật Tương Tác</title>
+  <title>Mai và Chuyến Phiêu Lưu Của Những Biển Báo - Sách Video Tương Tác</title>
   
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
-  
-  <!-- Thư viện PageFlip 3D (Offline) -->
-  <script src="libs/page-flip.browser.js"></script>
 </head>
 <body>
 
-  <!-- Thanh thông tin Header -->
+  <!-- Thanh tiêu đề Header -->
   <header class="app-header">
     <div class="book-title-header">
       <h1>Mai và Chuyến Phiêu Lưu Của Những Biển Báo</h1>
-      <span class="badge-tag">Sách Lật Động</span>
+      <span class="badge-tag">Sách Video Động</span>
     </div>
     <div class="header-status">
       <div class="speaking-indicator" id="speaking-indicator">
         <div class="sound-wave-bars">
           <span></span><span></span><span></span>
         </div>
-        <span>Đang đọc...</span>
+        <span>Đang kể chuyện...</span>
       </div>
     </div>
   </header>
 
-  <!-- Khung đọc sách Flipbook -->
-  <main class="flipbook-viewport">
-    <div id="flipbook" class="flipbook-container">
-      <!-- Các trang sách sẽ được render tự động từ dữ liệu tại đây -->
+  <!-- Khung đọc sách Video chính (Multimedia Stage) -->
+  <main class="reader-viewport">
+    <div class="story-card" id="story-card">
+      
+      <!-- Cột Trái: Video Hoạt Hình Chuyển Động Thực Thụ -->
+      <div class="media-column" id="media-column">
+        <div class="video-container" id="video-container">
+          <!-- Bìa hoặc Video sẽ hiển thị tại đây -->
+          <img id="cover-image" src="assets/pages/cover_front.jpg" alt="Bìa sách" class="cover-media">
+          <video id="story-video" class="story-media" loop muted playsinline preload="auto" style="display: none;"></video>
+        </div>
+      </div>
+
+      <!-- Cột Phải: Lời Kể & Chữ Chạy Karaoke -->
+      <div class="text-column" id="text-column">
+        <div class="text-header" id="text-header">KIM THANH LÊ HUỲNH</div>
+        
+        <div class="story-body" id="story-body">
+          <!-- Nội dung chữ hoặc giới thiệu bìa -->
+          <div id="cover-intro" class="cover-intro-view">
+            <div class="intro-badge">✨ Quyển Sách Video Thông Minh</div>
+            <h2>Chào mừng bạn nhỏ đến với hành trình của bé Mai!</h2>
+            <p>Hôm nay, bác Hùng sẽ cùng bạn Mai dạo phố bằng chiếc xe đạp vàng và khám phá những bí mật thú vị của các biển báo giao thông.</p>
+            <button class="btn-start-reading" id="btn-start-reading">
+              <span>▶️ Bắt Đầu Đọc Truyện</span>
+            </button>
+          </div>
+
+          <div id="story-text-container" class="story-text-view" style="display: none;">
+            <p class="story-paragraph" id="story-paragraph">
+              <!-- Các từ Karaoke sẽ được render tại đây -->
+            </p>
+          </div>
+
+          <div id="end-view" class="end-view" style="display: none;">
+            <div class="end-icon">🌟</div>
+            <h2>Chúc Mừng Bạn Nhỏ!</h2>
+            <p>Bé đã cùng bạn Mai hoàn thành chuyến phiêu lưu tuyệt vời và học được thật nhiều bí mật của các biển báo giao thông. Hãy luôn nhớ chấp hành luật an toàn giao thông nhé!</p>
+            <button class="btn-replay-all" id="btn-replay-all">
+              <span>🔄 Đọc Lại Từ Đầu</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="text-footer" id="text-footer">
+          <div class="audio-progress-bar-wrap" id="audio-progress-wrap" style="display: none;">
+            <div class="audio-progress-bar" id="audio-progress-bar"></div>
+          </div>
+          <div class="page-number-display" id="page-number-display">Bìa sách</div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Audio Element phát giọng đọc tiếng Việt -->
+  <audio id="main-audio" preload="auto"></audio>
 
   <!-- Thanh điều khiển nổi bên dưới (Control Dock) -->
   <nav class="control-dock" aria-label="Thanh điều khiển">
@@ -42,7 +90,7 @@
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     </button>
 
-    <button class="dock-btn btn-play-pause" id="btn-play-pause" title="Bắt đầu / Dừng đọc (Phím Cách)">
+    <button class="dock-btn btn-play-pause" id="btn-play-pause" title="Bắt đầu / Tạm dừng đọc (Phím Cách)">
       <svg id="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
       <svg id="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
     </button>
@@ -53,11 +101,11 @@
 
     <div class="dock-separator"></div>
 
-    <div class="dock-page-info" id="dock-page-info">Bìa</div>
+    <div class="dock-page-info" id="dock-page-info">Bìa sách</div>
 
-    <div class="auto-turn-pill active" id="btn-auto-turn" title="Tự động lật sang trang sau khi đọc xong">
+    <div class="auto-turn-pill active" id="btn-auto-turn" title="Tự động qua trang khi đọc xong">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-      <span>Tự lật trang: Bật</span>
+      <span>Tự qua trang: Bật</span>
     </div>
 
     <button class="dock-btn" id="btn-replay-page" title="Đọc lại trang này">
@@ -82,11 +130,11 @@
   <div class="drawer-overlay" id="drawer-overlay">
     <div class="drawer-panel">
       <div class="drawer-header">
-        <h3>Danh Sách Các Trang</h3>
+        <h3>Mục Lục Các Trang</h3>
         <button class="btn-close-drawer" id="btn-close-drawer">✕</button>
       </div>
       <div class="thumbnails-grid" id="thumbnails-grid">
-        <!-- Render danh sách thumbnail tự động -->
+        <!-- Render thumbnail tự động -->
       </div>
     </div>
   </div>
@@ -94,8 +142,6 @@
   <!-- Scripts Logic -->
   <script src="js/book-data.js"></script>
   <script src="js/word-timestamps.js"></script>
-  <script src="js/audio-speech.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
-

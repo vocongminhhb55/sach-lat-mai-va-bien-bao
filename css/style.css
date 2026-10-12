@@ -4,13 +4,11 @@
   --primary-color: #ff6b6b;
   --secondary-color: #4ecdc4;
   --accent-color: #ffd166;
-  --dark-color: #2b2d42;
+  --dark-color: #1e293b;
   --paper-bg: #fcfaf7;
-  --paper-border: #f0ebe1;
-  --text-color: #2c3437;
-  --highlight-bg: #ffe082;
-  --highlight-text: #bf360c;
-  --shadow-color: rgba(43, 45, 66, 0.15);
+  --text-color: #1c1917;
+  --highlight-bg: #fef08a;
+  --highlight-text: #b45309;
 }
 
 * {
@@ -29,8 +27,8 @@ body {
   align-items: center;
   justify-content: space-between;
   overflow-x: hidden;
-  user-select: none;
   color: var(--text-color);
+  user-select: none;
 }
 
 /* Header thương hiệu */
@@ -40,9 +38,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   z-index: 100;
 }
@@ -50,7 +48,7 @@ body {
 .book-title-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .book-title-header h1 {
@@ -64,29 +62,28 @@ body {
   color: #ef4444;
   font-size: 0.75rem;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 3px 10px;
   border-radius: 20px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .header-status {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #475569;
 }
 
 .speaking-indicator {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 8px;
+  padding: 5px 14px;
   background: #ecfdf5;
   border-radius: 20px;
   color: #059669;
   font-size: 0.85rem;
+  font-weight: 600;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -117,260 +114,78 @@ body {
   100% { height: 14px; }
 }
 
-/* Khung sách Flipbook */
-.flipbook-viewport {
+/* Khung đọc sách chính */
+.reader-viewport {
   width: 100%;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px 10px;
-  position: relative;
+  padding: 20px 15px;
 }
 
-.flipbook-container {
+.story-card {
   max-width: 1100px;
   width: 95vw;
-  height: min(75vh, 720px);
-  position: relative;
-  filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.25));
-  transition: transform 0.3s ease;
-}
-
-/* Cấu trúc từng trang */
-.page {
-  background-color: var(--paper-bg);
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+  height: min(78vh, 740px);
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 20px 45px rgba(30, 41, 59, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.35s ease;
+}
+
+/* Cột Trái: Video Player */
+.media-column {
+  flex: 1;
+  background: #0f172a;
   position: relative;
-}
-
-/* Trang bìa */
-.page-cover {
-  cursor: pointer;
-  background-color: #2b3a42;
-}
-
-.page-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.cover-click-prompt {
-  position: absolute;
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.75);
-  color: white;
-  padding: 10px 22px;
-  border-radius: 30px;
-  font-weight: 700;
-  font-size: 0.95rem;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  animation: pulseButton 2s infinite ease-in-out;
-  cursor: pointer;
-  backdrop-filter: blur(5px);
+  justify-content: center;
 }
 
-@keyframes pulseButton {
-  0%, 100% { transform: translateX(-50%) scale(1); }
-  50% { transform: translateX(-50%) scale(1.06); }
-}
-
-/* Trang minh họa (Left page) */
-.page-left {
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.illustration-wrap {
+.video-container {
   width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden;
 }
 
-.illustration-wrap img.bg-art,
-.illustration-wrap video.story-video {
+.cover-media,
+.story-media {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: opacity 0.4s ease;
 }
 
-/* Lớp tương tác Hotspot trên tranh */
-.hotspot-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: auto;
-}
-
-.hotspot {
-  position: absolute;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  pointer-events: auto;
-}
-
-/* Vòng nhấp nháy thu hút sự chú ý của bé */
-.hotspot::before {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: inherit;
-  border: 2px dashed rgba(255, 215, 0, 0.6);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.hotspot:hover::before {
-  opacity: 1;
-  animation: rotateDashed 6s linear infinite;
-}
-
-@keyframes rotateDashed {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Nhãn chú thích biển báo/nhân vật */
-.hotspot-badge {
-  position: absolute;
-  bottom: -32px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.8);
-  background: rgba(30, 41, 59, 0.9);
-  color: #ffd166;
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 20px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  z-index: 50;
-}
-
-.hotspot:hover .hotspot-badge,
-.hotspot.active .hotspot-badge {
-  opacity: 1;
-  transform: translateX(-50%) scale(1);
-  bottom: -36px;
-}
-
-/* CÁC HIỆU ỨNG ĐỘNG KHI TỪ ĐƯỢC ĐỌC ĐẾN */
-.hotspot.active {
-  z-index: 40;
-}
-
-/* 1. Hiệu ứng phóng to phát sáng vàng rực (Pulse Glow) */
-.hotspot.pulse-glow.active,
-.hotspot.alert-pulse.active {
-  box-shadow: 0 0 25px 8px rgba(255, 214, 10, 0.85), inset 0 0 15px rgba(255, 255, 255, 0.8);
-  animation: glowPulseAnim 1.2s infinite alternate;
-}
-
-@keyframes glowPulseAnim {
-  0% { transform: scale(1); box-shadow: 0 0 15px 4px rgba(255, 214, 10, 0.7); }
-  100% { transform: scale(1.08); box-shadow: 0 0 35px 12px rgba(255, 214, 10, 0.95); }
-}
-
-/* 2. Hiệu ứng biển cấm rung lắc cảnh báo (Alert Shake) */
-.hotspot.alert-shake.active {
-  box-shadow: 0 0 30px 10px rgba(239, 68, 68, 0.85);
-  animation: shakeAlertAnim 0.6s infinite ease-in-out;
-}
-
-@keyframes shakeAlertAnim {
-  0%, 100% { transform: translateX(0) rotate(0deg) scale(1.05); }
-  20% { transform: translateX(-4px) rotate(-3deg) scale(1.06); }
-  40% { transform: translateX(4px) rotate(3deg) scale(1.06); }
-  60% { transform: translateX(-3px) rotate(-2deg) scale(1.05); }
-  80% { transform: translateX(3px) rotate(2deg) scale(1.05); }
-}
-
-/* 3. Hiệu ứng xe nhấp nhô đạp xe (Bounce) */
-.hotspot.bounce.active,
-.hotspot.ride-along.active {
-  animation: bikeBounceAnim 0.7s infinite alternate ease-in-out;
-  box-shadow: 0 0 20px 6px rgba(78, 205, 196, 0.8);
-}
-
-@keyframes bikeBounceAnim {
-  0% { transform: translateY(0) scale(1); }
-  100% { transform: translateY(-8px) scale(1.04); }
-}
-
-/* 4. Hiệu ứng biển xanh phát hào quang lục (Green Glow) */
-.hotspot.green-glow.active {
-  box-shadow: 0 0 30px 10px rgba(16, 185, 129, 0.85);
-  animation: greenPulseAnim 1.2s infinite alternate;
-}
-
-@keyframes greenPulseAnim {
-  0% { transform: scale(1); box-shadow: 0 0 15px 4px rgba(16, 185, 129, 0.7); }
-  100% { transform: scale(1.08); box-shadow: 0 0 35px 12px rgba(16, 185, 129, 0.95); }
-}
-
-/* 5. Hiệu ứng số 40 nhịp tim (Heartbeat Pulse) */
-.hotspot.heartbeat-pulse.active {
-  box-shadow: 0 0 35px 10px rgba(244, 63, 94, 0.9);
-  animation: heartbeatAnim 0.8s infinite ease-in-out;
-}
-
-@keyframes heartbeatAnim {
-  0% { transform: scale(1); }
-  15% { transform: scale(1.12); }
-  30% { transform: scale(1); }
-  45% { transform: scale(1.1); }
-  60% { transform: scale(1); }
-}
-
-/* 6. Hiệu ứng hoa pháo giấy chúc mừng (Celebrate) */
-.hotspot.celebrate-confetti.active {
-  box-shadow: 0 0 30px 10px rgba(245, 158, 11, 0.8);
-  animation: celebrateSparkle 1.5s infinite alternate;
-}
-
-@keyframes celebrateSparkle {
-  0% { filter: brightness(1); }
-  100% { filter: brightness(1.2) drop-shadow(0 0 15px gold); }
-}
-
-/* Trang chữ (Right page) */
-.page-right {
+/* Cột Phải: Lời Kể & Karaoke */
+.text-column {
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 40px 48px;
   background-color: var(--paper-bg);
   background-image: 
-    radial-gradient(ellipse at top right, rgba(240, 235, 220, 0.4), transparent 70%),
-    linear-gradient(to right, rgba(0,0,0,0.06), transparent 25px);
+    radial-gradient(ellipse at top right, rgba(240, 235, 220, 0.5), transparent 70%),
+    linear-gradient(to right, rgba(0,0,0,0.03), transparent 25px);
   position: relative;
 }
 
-.page-header {
+.text-header {
   text-align: right;
   font-family: 'Lora', serif;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   letter-spacing: 2px;
   color: #78716c;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
   border-bottom: 1px dashed rgba(120, 113, 108, 0.2);
   padding-bottom: 12px;
 }
@@ -381,146 +196,190 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px 0;
+  overflow-y: auto;
 }
 
-.story-paragraph {
-  font-family: 'Lora', serif;
-  font-size: 1.35rem;
-  line-height: 2.1;
-  color: #1c1917;
-  text-align: justify;
-}
-
-/* TỪNG TỪ ĐƯỢC BÔI ĐẬM CHẠY KARAOKE */
-.word {
-  display: inline-block;
-  padding: 0 3px;
-  margin: 0 1px;
-  border-radius: 6px;
-  transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
-  position: relative;
-}
-
-/* Trạng thái đang được đọc */
-.word.karaoke-current {
-  background: #fef08a !important;
-  color: #b45309 !important;
-  font-weight: 700;
-  transform: scale(1.15);
-  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);
-  z-index: 5;
-}
-
-/* Trạng thái từ khóa biển báo */
-.word.keyword-matched {
-  background: #fed7aa;
-  color: #c2410c;
-  font-weight: 700;
-  border-bottom: 2px solid #ea580c;
-}
-
-/* Trạng thái đã đọc qua (Unhighlight hoàn toàn) */
-.word.karaoke-past {
-  background: transparent !important;
-  color: #57534e !important;
-  box-shadow: none !important;
-  transform: scale(1) !important;
-}
-
-.page-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 15px;
-  border-top: 1px dashed rgba(120, 113, 108, 0.2);
-}
-
-.hint-pill {
-  font-size: 0.82rem;
-  color: #a8a29e;
-  font-style: italic;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.page-num {
-  font-family: 'Lora', serif;
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #78716c;
-}
-
-/* Trang bìa sau (Back cover) */
-.page-back-cover {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 50px 30px;
+/* Màn hình giới thiệu bìa */
+.cover-intro-view {
   text-align: center;
-  background: linear-gradient(135deg, #1e293b, #0f172a);
-  color: white;
+  max-width: 440px;
 }
 
-.back-cover-card {
-  max-width: 420px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 35px 25px;
+.intro-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: #fef3c7;
+  color: #d97706;
+  font-size: 0.85rem;
+  font-weight: 700;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
+  margin-bottom: 18px;
 }
 
-.back-cover-icon {
-  font-size: 3.5rem;
-  margin-bottom: 15px;
-  animation: bounce 2s infinite ease-in-out;
+.cover-intro-view h2 {
+  font-size: 1.65rem;
+  color: #1e3a8a;
+  line-height: 1.4;
+  margin-bottom: 14px;
 }
 
-.back-cover-card h2 {
-  font-size: 1.6rem;
-  color: #fde047;
-  margin-bottom: 12px;
+.cover-intro-view p {
+  font-size: 1.05rem;
+  color: #475569;
+  line-height: 1.8;
+  margin-bottom: 28px;
 }
 
-.back-cover-card p {
-  font-size: 1rem;
-  line-height: 1.7;
-  color: #cbd5e1;
-  margin-bottom: 25px;
-}
-
-.replay-book-btn {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+.btn-start-reading {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   border: none;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  padding: 12px 28px;
-  border-radius: 30px;
+  padding: 14px 34px;
+  border-radius: 35px;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.35);
   transition: all 0.25s ease;
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-.replay-book-btn:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 8px 25px rgba(217, 119, 6, 0.6);
+.btn-start-reading:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.5);
+}
+
+/* Đoạn văn bản kể chuyện */
+.story-text-view {
+  width: 100%;
+}
+
+.story-paragraph {
+  font-family: 'Lora', serif;
+  font-size: 1.35rem;
+  line-height: 2.15;
+  color: #1c1917;
+  text-align: justify;
+}
+
+/* TỪNG TỪ ĐƯỢC CHẠY KARAOKE */
+.word {
+  display: inline-block;
+  padding: 0 3px;
+  margin: 0 1px;
+  border-radius: 6px;
+  transition: all 0.12s ease;
+  position: relative;
+}
+
+/* Đang đọc: BẬT highlight vàng cam */
+.word.karaoke-current {
+  background: #fef08a !important;
+  color: #b45309 !important;
+  font-weight: 700;
+  transform: scale(1.12);
+  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);
+  z-index: 5;
+}
+
+/* Đã đọc xong: UNHIGHLIGHT hoàn toàn */
+.word.karaoke-past {
+  background: transparent !important;
+  color: #44403c !important;
+  font-weight: 400;
+  transform: scale(1) !important;
+  box-shadow: none !important;
+}
+
+/* Màn hình kết thúc */
+.end-view {
+  text-align: center;
+  max-width: 440px;
+}
+
+.end-icon {
+  font-size: 3.5rem;
+  margin-bottom: 12px;
+  animation: bounce 2s infinite ease-in-out;
+}
+
+.end-view h2 {
+  font-size: 1.7rem;
+  color: #059669;
+  margin-bottom: 14px;
+}
+
+.end-view p {
+  font-size: 1rem;
+  color: #475569;
+  line-height: 1.8;
+  margin-bottom: 26px;
+}
+
+.btn-replay-all {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  border: none;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 13px 30px;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.35);
+  transition: all 0.25s ease;
+}
+
+.btn-replay-all:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.text-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px dashed rgba(120, 113, 108, 0.2);
+}
+
+.audio-progress-bar-wrap {
+  width: 100%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.audio-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.page-number-display {
+  text-align: right;
+  font-family: 'Lora', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #78716c;
 }
 
 /* THANH ĐIỀU KHIỂN NỔI (CONTROL DOCK) */
 .control-dock {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);
   padding: 10px 24px;
   border-radius: 40px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -566,11 +425,6 @@ body {
   transform: scale(1.08);
 }
 
-.dock-btn.active {
-  background: #e0f2fe;
-  color: #0284c7;
-}
-
 .dock-separator {
   width: 1px;
   height: 24px;
@@ -581,7 +435,7 @@ body {
   font-weight: 700;
   font-size: 0.95rem;
   color: #475569;
-  min-width: 60px;
+  min-width: 75px;
   text-align: center;
 }
 
@@ -712,14 +566,23 @@ body {
   color: #475569;
 }
 
-/* RESPONSIVE CHO MÀN HÌNH NHỎ / ĐIỆN THOẠI */
+/* Responsive */
 @media (max-width: 900px) {
+  .story-card {
+    flex-direction: column;
+    height: auto;
+    max-height: 85vh;
+  }
+  .media-column {
+    height: 320px;
+    flex: none;
+  }
+  .text-column {
+    padding: 24px 20px;
+  }
   .story-paragraph {
     font-size: 1.15rem;
     line-height: 1.9;
-  }
-  .page-right {
-    padding: 25px 25px;
   }
 }
 
@@ -727,15 +590,12 @@ body {
   .app-header h1 {
     font-size: 0.95rem;
   }
-  .flipbook-container {
-    height: 70vh;
+  .media-column {
+    height: 250px;
   }
   .story-paragraph {
-    font-size: 1rem;
-    line-height: 1.7;
-  }
-  .page-right {
-    padding: 18px 16px;
+    font-size: 1.05rem;
+    line-height: 1.8;
   }
   .control-dock {
     padding: 8px 14px;
@@ -745,4 +605,3 @@ body {
     display: none;
   }
 }
-

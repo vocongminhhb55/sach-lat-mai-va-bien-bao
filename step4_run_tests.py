@@ -159,36 +159,30 @@ def run_all_unit_tests():
     runner.assert_true(len(past_end) == len(page1_words), "Khi hết audio: Toàn bộ từ chuyển sang trạng thái đã đọc", "Chưa đọc hết từ")
 
     # -------------------------------------------------------------
-    # NHÓM 5: KIỂM THỬ ĐIỀU HƯỚNG LẬT TRANG (FLIPBOOK NAVIGATION MATH)
+    # NHÓM 5: KIỂM THỬ ĐIỀU HƯỚNG TUẦN TỰ TRANG (KHÔNG BỎ QUA TRANG 1)
     # -------------------------------------------------------------
-    print("\n--- NHÓM 5: KIỂM THỬ CÔNG THỨC LẬT TRANG AN TOÀN (SAFE FLIP) ---")
-    def safe_flip_next(cur):
+    print("\n--- NHÓM 5: KIỂM THỬ ĐIỀU HƯỚNG TUẦN TỰ TRANG (KHÔNG BỎ QUA TRANG 1) ---")
+    def get_next_page(cur):
         if cur == 0:
             return 1
-        elif cur >= 17:
-            return 19
-        else:
-            return min(19, cur + 2)
+        elif cur < 10:
+            return cur + 1
+        return 10
 
-    def safe_flip_prev(cur):
-        if cur <= 2:
-            return 0
-        else:
-            return max(0, cur - 2)
+    def get_prev_page(cur):
+        if cur > 0:
+            return cur - 1
+        return 0
 
-    # Lật từ bìa trước (0)
-    runner.assert_true(safe_flip_next(0) == 1, "Từ bìa trước (0): Lật sang Trang đôi 1 & 2 (1)", f"Nhận được {safe_flip_next(0)}")
-    # Lật các trang tiếp theo
-    runner.assert_true(safe_flip_next(1) == 3, "Từ Trang 1 (1): Lật sang Trang 2 (3)", f"Nhận được {safe_flip_next(1)}")
-    runner.assert_true(safe_flip_next(15) == 17, "Từ Trang 8 (15): Lật sang Trang 9 (17)", f"Nhận được {safe_flip_next(15)}")
-    runner.assert_true(safe_flip_next(17) == 19, "Từ Trang 9 (17): Lật sang Bìa sau (19)", f"Nhận được {safe_flip_next(17)}")
-    runner.assert_true(safe_flip_next(19) == 19, "Từ Bìa sau (19): Không lật vượt quá trang cuối", f"Nhận được {safe_flip_next(19)}")
+    runner.assert_true(get_next_page(0) == 1, "Từ bìa trước (0): Đi thẳng vào Trang 1 (Không bỏ qua trang 1)", f"Nhận được {get_next_page(0)}")
+    for p in range(1, 9):
+        runner.assert_true(get_next_page(p) == p + 1, f"Từ Trang {p}: Đi tiếp sang Trang {p+1}", f"Nhận được {get_next_page(p)}")
+    runner.assert_true(get_next_page(9) == 10, "Từ Trang 9: Đi sang Màn hình kết thúc (10)", f"Nhận được {get_next_page(9)}")
+    runner.assert_true(get_next_page(10) == 10, "Từ Kết thúc (10): Không vượt quá trang cuối", f"Nhận được {get_next_page(10)}")
 
-    # Lật lùi (Prev)
-    runner.assert_true(safe_flip_prev(1) == 0, "Từ Trang 1 (1): Lật về Bìa trước (0)", f"Nhận được {safe_flip_prev(1)}")
-    runner.assert_true(safe_flip_prev(2) == 0, "Từ Trang 1 phải (2): Lật về Bìa trước (0)", f"Nhận được {safe_flip_prev(2)}")
-    runner.assert_true(safe_flip_prev(3) == 1, "Từ Trang 2 (3): Lật về Trang 1 (1)", f"Nhận được {safe_flip_prev(3)}")
-    runner.assert_true(safe_flip_prev(19) == 17, "Từ Bìa sau (19): Lật về Trang 9 (17)", f"Nhận được {safe_flip_prev(19)}")
+    runner.assert_true(get_prev_page(1) == 0, "Từ Trang 1 (1): Lùi về Bìa trước (0)", f"Nhận được {get_prev_page(1)}")
+    runner.assert_true(get_prev_page(2) == 1, "Từ Trang 2 (2): Lùi về Trang 1 (1)", f"Nhận được {get_prev_page(2)}")
+    runner.assert_true(get_prev_page(10) == 9, "Từ Kết thúc (10): Lùi về Trang 9 (9)", f"Nhận được {get_prev_page(10)}")
 
     # -------------------------------------------------------------
     # TỔNG KẾT KẾT QUẢ TEST
