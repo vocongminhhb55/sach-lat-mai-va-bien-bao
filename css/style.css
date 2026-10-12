@@ -196,12 +196,12 @@ body {
   overflow: hidden;
 }
 
-.illustration-wrap img.bg-art {
+.illustration-wrap img.bg-art,
+.illustration-wrap video.story-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s ease;
 }
 
 /* Lớp tương tác Hotspot trên tranh */
@@ -403,8 +403,8 @@ body {
 
 /* Trạng thái đang được đọc */
 .word.karaoke-current {
-  background: #fef08a;
-  color: #b45309;
+  background: #fef08a !important;
+  color: #b45309 !important;
   font-weight: 700;
   transform: scale(1.15);
   box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);
@@ -419,9 +419,12 @@ body {
   border-bottom: 2px solid #ea580c;
 }
 
-/* Trạng thái đã đọc qua */
+/* Trạng thái đã đọc qua (Unhighlight hoàn toàn) */
 .word.karaoke-past {
-  color: #44403c;
+  background: transparent !important;
+  color: #57534e !important;
+  box-shadow: none !important;
+  transform: scale(1) !important;
 }
 
 .page-footer {
@@ -742,3 +745,4 @@ body {
     display: none;
   }
 }
+

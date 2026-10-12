@@ -286,3 +286,4 @@ class SpeechNarrator {
 }
 
 window.SpeechNarrator = SpeechNarrator;
+
