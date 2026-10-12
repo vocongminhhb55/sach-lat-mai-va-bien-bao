@@ -726,23 +726,55 @@ body {
   color: #cbd5e1;
 }
 
-.btn-replay-all {
-  margin-top: 12px;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #fff;
-  border: none;
-  font-size: 1.15rem;
-  font-weight: 700;
-  padding: 14px 32px;
-  border-radius: 30px;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
-  transition: all 0.2s ease;
+.celebration-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 14px;
 }
 
-.btn-replay-all:hover {
+.btn-celebration-action {
+  border: none;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 13px 26px;
+  border-radius: 30px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+  font-family: inherit;
+  outline: none;
+}
+
+.btn-celebration-action.btn-replay-all {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(245, 158, 11, 0.4);
+}
+
+.btn-celebration-action.btn-replay-all:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(245, 158, 11, 0.55);
+  box-shadow: 0 12px 28px rgba(245, 158, 11, 0.55);
+}
+
+.btn-celebration-action.btn-back-page {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+}
+
+.btn-celebration-action.btn-back-page:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
 /* ==========================================================================

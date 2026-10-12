@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const leafBack = document.getElementById('leaf-back');
   const coverBack = document.getElementById('cover-back');
   const btnReplayAll = document.getElementById('btn-replay-all');
+  const btnBackPage9 = document.getElementById('btn-back-page9');
   const cornerNext = document.getElementById('corner-next');
   const cornerPrev = document.getElementById('corner-prev');
 
@@ -292,8 +293,144 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // TRƯỜNG HỢP VỀ BÌA TRƯỚC TỪ BẤT KỲ TRANG NÀO KHÁC (Page N ➔ Page 0)
+    if (targetPage === 0) {
+      coverBack.style.display = 'none';
+      bookSpread.style.display = 'none';
+      book.classList.remove('state-open', 'state-end');
+      book.classList.add('state-closed');
+      coverFront.style.display = 'block';
+      coverFront.classList.remove('flipping-close', 'flipping-open');
+      flippingLeaf.className = 'flipping-leaf';
+      currentPageIndex = 0;
+      updateDockInfo(0);
+      isFlipping = false;
+      setPlayingState(false);
+      return;
+    }
+
+    // TRƯỜNG HỢP ĐẶC BIỆT KHI ĐANG Ở BÌA SAU (Page 10)
+    if (currentPageIndex === 10) {
+      // 10A. ĐỌC LẠI TỪ ĐẦU (Page 10 ➔ Trang 1)
+      if (targetPage === 1) {
+        coverBack.style.display = 'none';
+        coverFront.style.display = 'none';
+        book.classList.remove('state-closed', 'state-end');
+        book.classList.add('state-open');
+        bookSpread.style.display = 'flex';
+        flippingLeaf.className = 'flipping-leaf';
+
+        updateRightPageContent(1);
+        playVideoForPage(1);
+        currentPageIndex = 1;
+        updateDockInfo(1);
+        isFlipping = false;
+
+        setPlayingState(true);
+        startPlayingStoryAudio(1);
+        return;
+      }
+
+      // 10B. LẬT LÙI VỀ TRANG 9 (Page 10 ➔ Trang 9) VỚI HIỆU ỨNG LÁ LẬT 3D
+      if (targetPage === 9) {
+        coverBack.style.display = 'none';
+        book.classList.remove('state-end');
+        book.classList.add('state-open');
+        bookSpread.style.display = 'flex';
+
+        leafBack.innerHTML = `
+          <div class="page-inner" style="padding: 44px 50px 32px 50px;">
+            <div class="story-header">${BOOK_DATA.pages[8].header}</div>
+            <div class="story-text-container">
+              <p class="story-paragraph">${BOOK_DATA.pages[8].text}</p>
+            </div>
+            <div class="page-footer">
+              <div class="page-num-indicator">Trang 9 / 9</div>
+            </div>
+          </div>
+        `;
+        leafFront.innerHTML = `<div style="width:100%;height:100%;background:#1e293b;border-radius:0 16px 16px 0;"></div>`;
+
+        flippingLeaf.className = 'flipping-leaf flip-backward';
+        playVideoForPage(9);
+
+        setTimeout(() => {
+          updateRightPageContent(9);
+        }, 400);
+
+        setTimeout(() => {
+          flippingLeaf.className = 'flipping-leaf';
+          currentPageIndex = 9;
+          updateDockInfo(9);
+          isFlipping = false;
+
+          if (isAutoPlaying) {
+            startPlayingStoryAudio(9);
+          }
+        }, 850);
+        return;
+      }
+
+      // 10C. NHẢY TỚI CÁC TRANG TRUYỆN KHÁC (Page 10 ➔ Trang 2..8 qua Drawer)
+      if (targetPage >= 2 && targetPage <= 8) {
+        coverBack.style.display = 'none';
+        coverFront.style.display = 'none';
+        book.classList.remove('state-closed', 'state-end');
+        book.classList.add('state-open');
+        bookSpread.style.display = 'flex';
+        flippingLeaf.className = 'flipping-leaf';
+
+        updateRightPageContent(targetPage);
+        playVideoForPage(targetPage);
+        currentPageIndex = targetPage;
+        updateDockInfo(targetPage);
+        isFlipping = false;
+
+        if (isAutoPlaying) {
+          startPlayingStoryAudio(targetPage);
+        }
+        return;
+      }
+    }
+
+    // TRƯỜNG HỢP LẬT SANG MÀN HÌNH KẾT THÚC / BÌA SAU (Trang N ➔ Page 10)
+    if (targetPage === 10) {
+      const fromPage = (currentPageIndex >= 1 && currentPageIndex <= 9) ? currentPageIndex : 9;
+      leafFront.innerHTML = `
+        <div class="page-inner" style="padding: 44px 50px 32px 50px;">
+          <div class="story-header">${BOOK_DATA.pages[fromPage - 1].header}</div>
+          <div class="story-text-container">
+            <p class="story-paragraph">${BOOK_DATA.pages[fromPage - 1].text}</p>
+          </div>
+          <div class="page-footer">
+            <div class="page-num-indicator">Trang ${fromPage} / 9</div>
+          </div>
+        </div>
+      `;
+      leafBack.innerHTML = `<div style="width:100%;height:100%;background:#1e293b;"></div>`;
+
+      flippingLeaf.className = 'flipping-leaf flip-forward';
+
+      setTimeout(() => {
+        bookSpread.style.display = 'none';
+        book.classList.remove('state-open');
+        book.classList.add('state-end');
+        coverBack.style.display = 'flex';
+      }, 400);
+
+      setTimeout(() => {
+        flippingLeaf.className = 'flipping-leaf';
+        currentPageIndex = 10;
+        updateDockInfo(10);
+        isFlipping = false;
+        narrator.playFanfareSound();
+        setPlayingState(false);
+      }, 850);
+      return;
+    }
+
     // TRƯỜNG HỢP 3: LẬT TIẾN GIỮA CÁC TRANG TRUYỆN (Trang N ➔ Trang N+1)
-    if (direction === 'forward' && targetPage >= 1 && targetPage <= 9) {
+    if (direction === 'forward' && currentPageIndex >= 1 && currentPageIndex <= 8 && targetPage >= 2 && targetPage <= 9) {
       const fromPage = currentPageIndex;
       const toPage = targetPage;
 
@@ -344,7 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // TRƯỜNG HỢP 4: LẬT LÙI GIỮA CÁC TRANG TRUYỆN (Trang N ➔ Trang N-1)
-    if (direction === 'backward' && targetPage >= 1 && targetPage <= 9) {
+    if (direction === 'backward' && currentPageIndex >= 2 && currentPageIndex <= 9 && targetPage >= 1 && targetPage < currentPageIndex) {
       const fromPage = currentPageIndex;
       const toPage = targetPage;
 
@@ -390,62 +527,14 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // TRƯỜNG HỢP 5: LẬT SANG MÀN HÌNH KẾT THÚC / BÌA SAU (Page 10)
-    if (targetPage === 10) {
-      leafFront.innerHTML = `
-        <div class="page-inner" style="padding: 44px 50px 32px 50px;">
-          <div class="story-header">${BOOK_DATA.pages[8].header}</div>
-          <div class="story-text-container">
-            <p class="story-paragraph">${BOOK_DATA.pages[8].text}</p>
-          </div>
-          <div class="page-footer">
-            <div class="page-num-indicator">Trang 9 / 9</div>
-          </div>
-        </div>
-      `;
-      leafBack.innerHTML = `<div style="width:100%;height:100%;background:#1e293b;"></div>`;
-
-      flippingLeaf.className = 'flipping-leaf flip-forward';
-
-      setTimeout(() => {
-        bookSpread.style.display = 'none';
-        book.classList.remove('state-open');
-        book.classList.add('state-end');
-        coverBack.style.display = 'flex';
-      }, 400);
-
-      setTimeout(() => {
-        flippingLeaf.className = 'flipping-leaf';
-        currentPageIndex = 10;
-        updateDockInfo(10);
-        isFlipping = false;
-        narrator.playFanfareSound();
-        setPlayingState(false);
-      }, 850);
-      return;
-    }
-
-    // TRƯỜNG HỢP 6: LẬT LÙI TỪ BÌA SAU VỀ TRANG 9
-    if (currentPageIndex === 10 && targetPage === 9) {
-      coverBack.style.display = 'none';
-      book.classList.remove('state-end');
-      book.classList.add('state-open');
-      bookSpread.style.display = 'flex';
-      updateRightPageContent(9);
-      playVideoForPage(9);
-      currentPageIndex = 9;
-      updateDockInfo(9);
-      isFlipping = false;
-      return;
-    }
-
-    // Trường hợp nhảy trang từ Drawer Thumbnail
+    // TRƯỜNG HỢP CHUYỂN TRANG KHÁC (Drawer Thumbnail hoặc Direct Jump)
     if (targetPage >= 1 && targetPage <= 9) {
       coverFront.style.display = 'none';
       coverBack.style.display = 'none';
       book.classList.remove('state-closed', 'state-end');
       book.classList.add('state-open');
       bookSpread.style.display = 'flex';
+      flippingLeaf.className = 'flipping-leaf';
       updateRightPageContent(targetPage);
       playVideoForPage(targetPage);
       currentPageIndex = targetPage;
@@ -606,6 +695,13 @@ document.addEventListener('DOMContentLoaded', () => {
   btnReplayAll.addEventListener('click', () => {
     flipToPage(1, 'backward');
   });
+
+  // Nút Quay về trang trước ở bìa sau
+  if (btnBackPage9) {
+    btnBackPage9.addEventListener('click', () => {
+      flipToPage(9, 'backward');
+    });
+  }
 
   // Bật/tắt tự động lật trang
   btnAutoTurn.addEventListener('click', () => {

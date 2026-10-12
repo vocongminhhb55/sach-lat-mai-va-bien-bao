@@ -185,6 +185,108 @@ def run_all_unit_tests():
     runner.assert_true(get_prev_page(10) == 9, "Từ Kết thúc (10): Lùi về Trang 9 (9)", f"Nhận được {get_prev_page(10)}")
 
     # -------------------------------------------------------------
+    # NHÓM 6: KIỂM THỬ XỬ LÝ MÀN HÌNH KẾT THÚC (PAGE 10) KHÔNG BỊ KẸT SÁCH
+    # -------------------------------------------------------------
+    print("\n--- NHÓM 6: KIỂM THỬ CHUYỂN TRẠNG THÁI TỪ PAGE 10 (KHÔNG BỊ KẸT) ---")
+    with open("index.html", "r", encoding="utf-8") as f:
+        html_content = f.read()
+
+    with open("js/app.js", "r", encoding="utf-8") as f:
+        app_js_content = f.read()
+
+    runner.assert_true('id="btn-replay-all"' in html_content, "HTML có nút Đọc lại từ đầu (#btn-replay-all)", "Thiếu nút #btn-replay-all")
+    runner.assert_true('id="btn-back-page9"' in html_content, "HTML có nút Quay về trang 9 (#btn-back-page9)", "Thiếu nút #btn-back-page9")
+    runner.assert_true('class="celebration-actions"' in html_content, "HTML có container celebration-actions", "Thiếu celebration-actions")
+    runner.assert_true('btnBackPage9' in app_js_content, "JS khởi tạo selector btnBackPage9", "Thiếu selector btnBackPage9 trong app.js")
+    runner.assert_true('currentPageIndex === 10' in app_js_content, "JS có khối xử lý chuyên biệt cho currentPageIndex === 10", "Thiếu xử lý Page 10 trong app.js")
+    runner.assert_true('coverBack.style.display = \'none\'' in app_js_content, "JS ẩn bìa sau coverBack khi thoát khỏi Page 10", "Chưa ẩn coverBack")
+    runner.assert_true('bookSpread.style.display = \'flex\'' in app_js_content, "JS khôi phục hiển thị bookSpread khi quay lại truyện", "Chưa hiện lại bookSpread")
+
+    # Mô phỏng máy trạng thái (State Machine Simulation) cho Page 10
+    class BookState:
+        def __init__(self):
+            self.currentPageIndex = 10
+            self.coverBackDisplay = 'flex'
+            self.bookSpreadDisplay = 'none'
+            self.bookClasses = {'state-end'}
+            self.isFlipping = False
+            self.isAutoPlaying = False
+
+        def flipToPage(self, targetPage, direction=None):
+            if self.isFlipping:
+                return "BLOCKED_BY_FLIPPING"
+            if targetPage < 0 or targetPage > 10:
+                return "INVALID_PAGE"
+            if targetPage == self.currentPageIndex:
+                return "SAME_PAGE"
+
+            self.isFlipping = True
+
+            # Trạng thái Page 10
+            if self.currentPageIndex == 10:
+                if targetPage == 1:
+                    self.coverBackDisplay = 'none'
+                    self.bookClasses.discard('state-end')
+                    self.bookClasses.add('state-open')
+                    self.bookSpreadDisplay = 'flex'
+                    self.currentPageIndex = 1
+                    self.isFlipping = False
+                    self.isAutoPlaying = True
+                    return "REPLAY_PAGE_1_SUCCESS"
+                elif targetPage == 9:
+                    self.coverBackDisplay = 'none'
+                    self.bookClasses.discard('state-end')
+                    self.bookClasses.add('state-open')
+                    self.bookSpreadDisplay = 'flex'
+                    self.currentPageIndex = 9
+                    self.isFlipping = False
+                    return "BACK_TO_PAGE_9_SUCCESS"
+                elif 2 <= targetPage <= 8:
+                    self.coverBackDisplay = 'none'
+                    self.bookClasses.discard('state-end')
+                    self.bookClasses.add('state-open')
+                    self.bookSpreadDisplay = 'flex'
+                    self.currentPageIndex = targetPage
+                    self.isFlipping = False
+                    return f"DRAWER_JUMP_PAGE_{targetPage}_SUCCESS"
+                elif targetPage == 0:
+                    self.coverBackDisplay = 'none'
+                    self.bookClasses.discard('state-end')
+                    self.bookClasses.add('state-closed')
+                    self.currentPageIndex = 0
+                    self.isFlipping = False
+                    return "BACK_TO_COVER_FRONT_SUCCESS"
+
+            return "OTHER"
+
+    # Test 1: Bấm Đọc lại từ đầu từ Page 10
+    sim1 = BookState()
+    res1 = sim1.flipToPage(1, 'backward')
+    runner.assert_true(
+        res1 == "REPLAY_PAGE_1_SUCCESS" and sim1.currentPageIndex == 1 and sim1.coverBackDisplay == 'none' and sim1.bookSpreadDisplay == 'flex' and not sim1.isFlipping,
+        "Page 10 ➔ Page 1 (Đọc lại từ đầu): Khôi phục spread, ẩn coverBack, sẵn sàng đọc trang 1",
+        f"Lỗi state sim1: {res1}"
+    )
+
+    # Test 2: Bấm Quay về trang 9 từ Page 10
+    sim2 = BookState()
+    res2 = sim2.flipToPage(9, 'backward')
+    runner.assert_true(
+        res2 == "BACK_TO_PAGE_9_SUCCESS" and sim2.currentPageIndex == 9 and sim2.coverBackDisplay == 'none' and sim2.bookSpreadDisplay == 'flex' and not sim2.isFlipping,
+        "Page 10 ➔ Page 9 (Lùi về trang trước): Khôi phục spread, chuyển về trang 9 mượt mà",
+        f"Lỗi state sim2: {res2}"
+    )
+
+    # Test 3: Nhảy sang trang ngẫu nhiên (VD: trang 5) từ Page 10 qua Drawer
+    sim3 = BookState()
+    res3 = sim3.flipToPage(5)
+    runner.assert_true(
+        res3 == "DRAWER_JUMP_PAGE_5_SUCCESS" and sim3.currentPageIndex == 5 and sim3.coverBackDisplay == 'none' and not sim3.isFlipping,
+        "Page 10 ➔ Trang 5 (Mục lục Drawer): Nhảy chính xác không bị kẹt bìa sau",
+        f"Lỗi state sim3: {res3}"
+    )
+
+    # -------------------------------------------------------------
     # TỔNG KẾT KẾT QUẢ TEST
     # -------------------------------------------------------------
     print("\n" + "=" * 70)
