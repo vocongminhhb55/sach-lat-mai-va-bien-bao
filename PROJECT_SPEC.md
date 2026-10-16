@@ -38,7 +38,7 @@ Tất cả các quyết định thiết kế và thay đổi trong mã nguồn �
 | **10** | Khúc cuối "Chúc Mừng Bé Đã Khám Phá Hết Sách!" không thể quay lại trang trước hay bấm đọc lại từ đầu, bị kẹt luôn. | Sửa lỗi kẹt màn hình kết thúc (Page 10): Phân nhánh lại hàm `flipToPage`, ẩn `coverBack`, khôi phục `bookSpread`, hỗ trợ quay lại trang 9, đọc lại từ đầu từ trang 1 và chọn trang qua Drawer; Bổ sung nút "⬅ Quay Về Trang 9" trên màn hình chúc mừng. | ✅ Đã hoàn thành |
 | **11** | Bấm tạm dừng và quay lại thì không đọc tiếp mà đọc lại từ đầu (sửa để đọc tiếp từ vị trí tạm dừng); Thanh tiến độ có thể điều chỉnh được (seek); Bấm vào chữ là tự động nhảy đọc từ chữ đó; Yêu cầu kiểm tra an toàn không phá vỡ logic cũ. | - Viết lại bộ điều khiển: Tách riêng `pauseStoryAudio()` (bảo lưu `currentTime` và tiến trình) và `resumeStoryAudio()` (tiếp tục phát từ `currentTime` cũ).<br>- Thêm hàm `seekStoryAudio(targetTime)`: Bấm vào thanh tiến trình `#audio-progress-wrap` hoặc click vào bất kỳ từ nào (`.word`) đều lập tức nhảy audio tới giây đó và cập nhật đồng bộ highlight karaoke.<br>- Bổ sung CSS hover cho từng từ và thanh tiến trình.<br>- Bổ sung Nhóm 7 trong test suite, nâng tổng số lên 150 unit tests PASS 100%. | ✅ Đã hoàn thành |
 | **12** | Trang bìa chưa được đọc (thêm cái để đọc trang bìa, không cần thanh tiến độ); Animation lật trang đang sai: trang ở dưới trang được lật phải là trang mới nhưng lại hiện trang cũ, xong animation mới hiện trang mới nhìn kỳ; Tiếng lật trang đang kỳ, thay tiếng hay hơn; Highlight chữ đôi khi to ra làm chữ khác nhảy xuống dòng lung tung, muốn ngăn chặn điều đó. | - **Đọc trang bìa:** Dùng VieNeu-TTS sinh file `assets/audio/cover.mp3` đọc tên truyện và tên tác giả *"Mai và Chuyến Phiêu Lưu Của Những Biển Báo. Tác giả: Lê Huỳnh Kim Thanh."*; bổ sung nút "Nghe đọc bìa" trên trang bìa, tích hợp Play/Pause ở dock khi ở Page 0, không cần thanh tiến độ.<br>- **Sửa trễ hiển thị trang lật 3D:** Trong `flipToPage`, gọi ngay `updateRightPageContent(toPage)` (khi lật tiến) và `playVideoForPage(toPage)` (khi lật lùi) tại mốc $t = 0$ thay vì chờ $400\text{ms}$. Khi lá lật vừa nhấc lên, trang bên dưới đã lập tức là trang mới chân thực.<br>- **Thay tiếng lật sách chân thực:** Thay thế xung Web Audio nhân tạo bằng file âm thanh lật sách giấy thật `assets/audio/page_flip.mp3` đa tầng âm học.<br>- **Triệt tiêu nhảy dòng khi highlight (CLS = 0):** Cố định `font-weight: 600` xuyên suốt, bỏ `transform: scale(...)` trên `.word.karaoke-current`, thay bằng hiệu ứng phát sáng `box-shadow` và đổi màu viền, đảm bảo $100\%$ không co dãn kích thước ký tự, không bao giờ bị nhảy rớt dòng chữ. | ✅ Đã hoàn thành |
-| **13** | Bỏ cái nút nghe đọc bìa đi (nó che nội dung quá); Đổi tiếng lật trang sang tiếng nào mà nó nghe sột soạt của giấy. | - **Gỡ bỏ nút nghe đọc bìa trên bìa sách:** Bỏ nút `#btn-read-cover` để giữ tranh bìa và thông tin tác giả nguyên vẹn, không bị che khuất; người dùng vẫn có thể bấm nút Play/Pause dưới thanh dock khi ở Page 0 để nghe đọc bìa.<br>- **Tiếng lật sách sột soạt chân thực:** Nâng cấp `page_flip.mp3` sang âm thanh thu âm vật lý chất lượng cao kết hợp giữa tiếng lật lá sách (page turn flick) và tiếng miết trượt giấy tự nhiên (paper slide), tạo nên tiếng "sột soạt" giòn giã, chân thực $100\%$. | ✅ Đã hoàn thành |
+| **14** | Mẫu Wan có chuyển động xuyên suốt lời đọc đã ổn; áp dụng cho cả 9 tranh truyện và ảnh bìa. | - Dùng pipeline tuần tự Wan 2.1 I2V 14B nối các đoạn chuyển động theo thời lượng audio; video xuất ở 480 × 832, 16 fps và ghép đúng giọng kể của từng trang.<br>- Bìa phát chuyển động toàn khung theo lời đọc; không phủ ảnh tĩnh lên phần dưới.<br>- Đã kiểm tra giải mã, audio/video, thời lượng và thông số của cả 10 video trước khi thay tài nguyên trong `assets/videos`. | ✅ Đã hoàn thành |
 
 ---
 
@@ -196,16 +196,16 @@ stateDiagram-v2
 
 ## 🧪 PHẦN 4: HỆ THỐNG KIỂM THỬ TỰ ĐỘNG (UNIT TESTS)
 
-Kịch bản kiểm thử được cài đặt trong `step4_run_tests.py`, bao gồm **165 test cases** chia làm 10 nhóm:
+Kịch bản kiểm thử được cài đặt trong `step4_run_tests.py`, bao gồm **172 test cases** chia làm 10 nhóm:
 
 1. **Nhóm 1 (27 tests):** Kiểm tra 9 file audio tiếng Việt (tồn tại, định dạng MP3, dung lượng $> 100\text{ KB}$, thời lượng chuẩn từ $15\text{s} - 35\text{s}$).
-2. **Nhóm 2 (45 tests):** Kiểm tra 9 video hoạt hình MP4 qua OpenCV (giải mã được, chuẩn độ phân giải $720 \times 1110$, chuẩn $30\text{ fps}$, thời lượng khung hình đầy đủ).
+2. **Nhóm 2 (45 tests):** Kiểm tra 9 video hoạt hình MP4 qua OpenCV (giải mã được, độ phân giải $480 \times 832$, tối thiểu $15\text{ fps}$, thời lượng khung hình đầy đủ).
 3. **Nhóm 3 (29 tests):** Kiểm tra cấu trúc word timestamps (tồn tại file JSON/JS, số lượng từ $> 50$ từ/trang, tính đơn điệu tăng dần nghiêm ngặt $t_{start} \le t_{end}$ và không bị đè thời gian).
 4. **Nhóm 4 (4 tests):** Mô phỏng thuật toán Karaoke Highlight & Unhighlight (đảm bảo tính độc quyền của highlight, chữ cũ được unhighlight $100\%$, không đè vệt màu).
 5. **Nhóm 5 (13 tests):** Kiểm tra logic điều hướng tuần tự (bìa trước vào thẳng trang 1, trang $1 \dots 9$, vào bìa sau 10, lùi từ 10 về 9, không bao giờ nhảy cóc).
 6. **Nhóm 6 (20 tests):** Kiểm tra máy trạng thái Page 10 (tồn tại các nút bấm DOM, selector trong JS, chuyển trạng thái từ 10 sang 1 khôi phục spread, lùi về 9 mượt mà, nhảy drawer trang $2 \dots 8$, đóng về bìa trước, không bao giờ bị kẹt lại).
 7. **Nhóm 7 (12 tests):** Kiểm tra cơ chế Tạm dừng (Pause bảo lưu `currentTime`), Đọc tiếp (Resume từ mốc cũ), Bấm vào từng từ để nhảy (`seekStoryAudio`) và Tua bằng thanh tiến trình.
-8. **Nhóm 8 (9 tests):** Kiểm tra file âm thanh bìa trước `cover.mp3`, tiếng lật sách `page_flip.mp3`, nút bấm đọc bìa và các hàm điều khiển `playCoverAudio`, `pauseCoverAudio`.
+8. **Nhóm 8:** Kiểm tra file âm thanh bìa trước `cover.mp3`, video bìa chuyển động toàn khung, tiếng lật sách `page_flip.mp3` và các hàm điều khiển audio/video bìa.
 9. **Nhóm 9 (3 tests):** Kiểm tra ngăn chặn hiện tượng nhảy dòng khi highlight (CLS = 0): xác nhận không đổi `font-weight: 700`, không `transform: scale`, dùng `box-shadow` phát sáng thuần túy.
 10. **Nhóm 10 (2 tests):** Kiểm tra đồng bộ hiển thị trang lật 3D: xác nhận `updateRightPageContent(toPage)` và `playVideoForPage(toPage)` được gọi ngay lập tức tại $t = 0$ (trang mới sẵn sàng dưới lá lật).
 
@@ -213,7 +213,7 @@ Kịch bản kiểm thử được cài đặt trong `step4_run_tests.py`, bao g
 ```powershell
 python step4_run_tests.py
 ```
-> Kết quả tiêu chuẩn: **165 TEST PASS | 0 TEST FAIL (100%)**.
+> Kết quả chạy xác nhận: **172 TEST PASS | 0 TEST FAIL**.
 
 ---
 
@@ -257,4 +257,3 @@ git push origin main
 
 ---
 *Tài liệu được khởi tạo và chuẩn hóa tự động vào ngày 12/10/2026. Mọi trợ lý AI tương lai vui lòng đọc kỹ tài liệu này trước khi thực hiện bất kỳ thay đổi nào trên mã nguồn.*
-

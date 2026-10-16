@@ -74,9 +74,9 @@ def run_all_unit_tests():
                 frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
                 cap.release()
 
-                runner.assert_true(w == 720 and h == 1110, f"Trang {i}: Độ phân giải video chuẩn 720x1110 ({w}x{h})", f"Độ phân giải sai: {w}x{h}")
-                runner.assert_true(fps >= 25.0, f"Trang {i}: Tốc độ khung hình mượt mà ({fps:.0f} fps)", f"FPS quá thấp: {fps}")
-                runner.assert_true(frame_count >= 150, f"Trang {i}: Số khung hình hợp lệ ({frame_count} frames)", "Video quá ngắn")
+                runner.assert_true(w == 480 and h == 832, f"Trang {i}: Độ phân giải video Wan 480x832 ({w}x{h})", f"Độ phân giải sai: {w}x{h}")
+                runner.assert_true(fps >= 15.0, f"Trang {i}: Tốc độ khung hình video Wan ({fps:.0f} fps)", f"FPS quá thấp: {fps}")
+                runner.assert_true(frame_count >= 300, f"Trang {i}: Video bao trùm toàn bộ lời kể ({frame_count} frames)", "Video quá ngắn")
 
     # -------------------------------------------------------------
     # NHÓM 3: KIỂM TRA DỮ LIỆU WORD TIMESTAMPS TỪ FASTER-WHISPER
@@ -394,6 +394,20 @@ def run_all_unit_tests():
         except Exception as e:
             runner.assert_true(False, "Đo thời lượng cover.mp3", str(e))
 
+    cover_video = "assets/videos/cover_front.mp4"
+    cover_video_exists = os.path.exists(cover_video)
+    runner.assert_true(cover_video_exists, "Video hoạt hình bìa trước tồn tại", f"Không tìm thấy {cover_video}")
+    if cover_video_exists:
+        cap = cv2.VideoCapture(cover_video)
+        is_opened = cap.isOpened()
+        runner.assert_true(is_opened, "OpenCV mở được video bìa trước", "Không thể decode cover video")
+        if is_opened:
+            cover_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            cover_fps = cap.get(cv2.CAP_PROP_FPS)
+            cap.release()
+            runner.assert_true(cover_frames >= 80, f"Bìa trước có chuyển động theo toàn bộ audio ({cover_frames} frames)", "Video bìa quá ngắn")
+            runner.assert_true(cover_fps >= 15.0, f"Bìa trước có tốc độ khung hình phù hợp ({cover_fps:.0f} fps)", "FPS bìa quá thấp")
+
     runner.assert_true(os.path.exists(flip_mp3), "File âm thanh lật sách page_flip.mp3 tồn tại", "Thiếu page_flip.mp3")
     if os.path.exists(flip_mp3):
         flip_size_kb = os.path.getsize(flip_mp3) / 1024
@@ -402,6 +416,11 @@ def run_all_unit_tests():
     runner.assert_true('id="btn-read-cover"' not in html_content, "Bìa trước không bị nút che khuất nội dung (theo yêu cầu người dùng)", "Vẫn còn nút #btn-read-cover che bìa")
     runner.assert_true('playCoverAudio' in app_js_content, "JS có hàm playCoverAudio phát giọng đọc bìa", "Thiếu playCoverAudio")
     runner.assert_true('pauseCoverAudio' in app_js_content, "JS có hàm pauseCoverAudio", "Thiếu pauseCoverAudio")
+    runner.assert_true('id="cover-video"' in html_content and 'cover-title-overlay' not in html_content, "Bìa dùng video chuyển động toàn khung, không phủ ảnh tĩnh lên phần dưới", "Video bìa bị thiếu hoặc còn lớp ảnh tĩnh che chuyển động")
+    cover_video_style = css_content.split('.cover-img', 1)[1].split('}', 1)[0] if '.cover-img' in css_content else ''
+    story_video_style = css_content.rsplit('.story-video-player', 1)[1].split('}', 1)[0] if '.story-video-player' in css_content else ''
+    runner.assert_true('object-fit: cover;' in cover_video_style and 'object-fit: cover;' in story_video_style, "Video bìa và truyện lấp đầy khung hiển thị", "Video không lấp đầy khung hiển thị")
+    runner.assert_true("currentPageIndex === 0 && mainAudio.src.includes('cover.mp3')" in app_js_content, "Kết thúc lời đọc bìa được xử lý riêng mà không ghi đè sự kiện kết thúc truyện", "Sai xử lý sự kiện audio kết thúc")
     runner.assert_true('currentPageIndex === 0' in app_js_content and 'playCoverAudio()' in app_js_content, "Nút Play/Pause ở thanh dock hỗ trợ phát/dừng giọng đọc bìa sách khi ở Page 0", "Thiếu điều khiển cover audio qua dock")
     with open("js/audio-speech.js", "r", encoding="utf-8") as f:
         audio_speech_content = f.read()
@@ -468,4 +487,3 @@ def run_all_unit_tests():
 if __name__ == '__main__':
     code = run_all_unit_tests()
     sys.exit(code)
-

@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Các phần tử DOM giao diện chính
   const book = document.getElementById('book');
   const coverFront = document.getElementById('cover-front');
+  const coverVideo = document.getElementById('cover-video');
   const btnReadCover = document.getElementById('btn-read-cover');
   const bookSpread = document.getElementById('book-spread');
   const spreadLeft = document.getElementById('spread-left');
@@ -224,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
       autoTurnTimeout = null;
     }
     mainAudio.pause();
+    coverVideo.pause();
     speakingIndicator.classList.remove('active');
     audioProgressBar.style.width = '0%';
     if (btnReadCover) {
@@ -235,6 +237,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Phát giọng đọc tên sách & tác giả ở trang bìa (Page 0)
   function playCoverAudio() {
     stopCurrentAudio();
+    coverVideo.currentTime = 0;
+    coverVideo.play().catch(err => {
+      console.warn("Cover video play blocked by browser policy:", err);
+    });
     mainAudio.src = 'assets/audio/cover.mp3';
     mainAudio.currentTime = 0;
     mainAudio.muted = isMuted;
@@ -245,20 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btnReadCover.querySelector('span').textContent = 'Đang đọc bìa...';
     }
 
-    mainAudio.onended = () => {
-      if (btnReadCover) {
-        btnReadCover.classList.remove('speaking');
-        btnReadCover.querySelector('span').textContent = 'Nghe đọc bìa';
-      }
-      if (autoTurnPages && isAutoPlaying && currentPageIndex === 0) {
-        autoTurnTimeout = setTimeout(() => {
-          flipToPage(1, 'forward');
-        }, 1200);
-      } else {
-        setPlayingState(false);
-      }
-    };
-
     mainAudio.play().catch(err => {
       console.warn("Cover audio play blocked by browser policy:", err);
     });
@@ -266,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function pauseCoverAudio() {
     mainAudio.pause();
+    coverVideo.pause();
     setPlayingState(false);
     if (btnReadCover) {
       btnReadCover.classList.remove('speaking');
@@ -279,6 +272,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     setPlayingState(true);
+    coverVideo.play().catch(err => {
+      console.warn("Cover video resume blocked by browser policy:", err);
+    });
     if (btnReadCover) {
       btnReadCover.classList.add('speaking');
       btnReadCover.querySelector('span').textContent = 'Đang đọc bìa...';
@@ -319,6 +315,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (animFrameId) {
       cancelAnimationFrame(animFrameId);
       animFrameId = null;
+    }
+    if (currentPageIndex === 0 && mainAudio.src.includes('cover.mp3')) {
+      coverVideo.pause();
+      if (btnReadCover) {
+        btnReadCover.classList.remove('speaking');
+        btnReadCover.querySelector('span').textContent = 'Nghe đọc bìa';
+      }
+      if (autoTurnPages && isAutoPlaying) {
+        autoTurnTimeout = setTimeout(() => {
+          flipToPage(1, 'forward');
+        }, 1200);
+      } else {
+        setPlayingState(false);
+      }
+      return;
     }
     speakingIndicator.classList.remove('active');
     audioProgressBar.style.width = '100%';

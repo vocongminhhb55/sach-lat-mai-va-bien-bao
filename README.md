@@ -21,12 +21,12 @@ Dự án sách thiếu nhi điện tử tương tác 3D đa phương tiện, chu
    - Bìa trước giữ sự thoáng đãng $100\%$, không bị bất kỳ nút bấm nào che khuất tranh minh họa và tên tác giả **Lê Huỳnh Kim Thanh**.
    - Khi ở bìa trước (Page 0), người đọc chỉ cần bấm nút **Play** ở thanh dock bên dưới để nghe giọng đọc tên sách và tên tác giả. Bấm trực tiếp vào bìa sách sẽ lật mở ngay vào Trang 1.
 
-3. **Video Hoạt Hình MP4 Sống Động (Audio-Envelope Lip Sync & Eye Blink):**
-   - Tranh minh họa bên trái được chuyển hóa thành video hoạt hình sống động sinh từ mô hình AI và OpenCV trên GPU.
-   - **Môi mấp máy theo nhịp giọng nói (Lip-sync):** Miệng nhân vật tự động mấp máy mở/khép theo biên độ âm thanh giọng kể tiếng Việt.
-   - **Chớp mắt tự nhiên:** Mí mắt chớp nhẹ nhàng theo chu kỳ sinh học 3–4 giây/lần.
-   - **Cử động biểu cảm:** Biển báo phát sáng hào quang rực rỡ và rung lắc nhẹ đúng khoảnh khắc được nhắc tới trong lời kể.
-   - Khung hình khóa cứng $720 \times 1110\text{ px}$, không bị tách rời hay trôi lệch khỏi mép trang sách.
+3. **Hoạt Hình AI MP4 Theo Toàn Bộ Lời Kể (Wan 2.1 I2V):**
+   - Cả 9 tranh truyện bên trái và bìa trước đã được chuyển thành video AI, phát ngoại tuyến cùng giọng kể tương ứng.
+   - Các đoạn Wan 2.1 I2V được nối tiếp để video tiếp tục có chuyển động trong suốt lời kể, thay vì lặp lại một đoạn ngắn.
+   - Toàn bộ bìa chuyển động xuyên suốt lời đọc; không phủ ảnh tĩnh lên phần dưới nên tên sách, tác giả và tranh không bị chia thành vùng đứng yên.
+   - Video dùng độ phân giải $480 \times 832$ ở 16 fps để phù hợp mô hình lượng tử hóa trên GPU 12 GB.
+   - Đây là hoạt hình AI nên một số chi tiết có thể thay đổi nhẹ giữa các đoạn; không phải đồng bộ khẩu hình chính xác với từng âm tiết.
 
 4. **Giọng Kể Tiếng Việt Tự Nhiên (VieNeu-TTS Pipeline):**
    - Sử dụng mô hình tổng hợp giọng đọc AI chất lượng cao (voice nữ miền Nam `Kim Thanh`), truyền cảm, phát âm rõ ràng, phù hợp lứa tuổi thiếu nhi.
@@ -62,20 +62,20 @@ Dự án sách thiếu nhi điện tử tương tác 3D đa phương tiện, chu
 
 ---
 
-## 🧪 Hệ Thống Kiểm Thử Tự Động (165 Unit Tests)
+## 🧪 Hệ Thống Kiểm Thử Tự Động (172 Unit Tests)
 
 Dự án tích hợp bộ kiểm thử toàn diện `step4_run_tests.py` kiểm tra mọi thành phần của hệ thống:
 ```powershell
 python step4_run_tests.py
 ```
-**Kết quả: 165 TEST PASS | 0 TEST FAIL (100% Đạt Chuẩn).**
+**Kết quả xác nhận: 172 TEST PASS | 0 TEST FAIL.**
 
 ---
 
 ## 🛠️ Các Lệnh Thao Tác Kỹ Thuật
 
 ```powershell
-# Chạy toàn bộ 138 unit tests
+# Chạy toàn bộ 172 unit tests
 python step4_run_tests.py
 
 # Sinh lại âm thanh giọng đọc tiếng Việt (VieNeu-TTS)
@@ -84,7 +84,7 @@ python step1_generate_audio.py
 # Trích xuất lại timestamps từng từ (Faster-Whisper CUDA)
 python step2_extract_timestamps.py
 
-# Sinh lại video hoạt hình MP4 môi mấp máy & chớp mắt (OpenCV)
+# Sinh lại video hoạt hình OpenCV đời cũ (sẽ ghi đè video Wan hiện tại)
 python step3_generate_videos.py
 ```
 
